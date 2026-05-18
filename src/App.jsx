@@ -10,6 +10,7 @@ import DiffordsLinks from './components/DiffordsLinks'
 import TrainingMode from './components/TrainingMode'
 import Favourites from './components/Favourites'
 import PrintCards from './components/PrintCards'
+import ShotsSection from './components/ShotsSection'
 
 export default function App() {
   const { favourites, toggle, isFav } = useFavourites()
@@ -18,22 +19,14 @@ export default function App() {
     <Routes>
       <Route path="/" element={<WelcomeBook />} />
       <Route path="/dashboard" element={<Dashboard />} />
-      <Route
-        path="/house"
-        element={<HouseRecipes favourites={favourites} onToggleFav={toggle} />}
-      />
-      <Route
-        path="/recipe/:id"
-        element={<RecipeDetail isFav={isFav} onToggleFav={toggle} />}
-      />
-      <Route path="/search" element={<ExternalSearch favourites={favourites} onToggleFav={toggle} />} />
+      <Route path="/house" element={<HouseRecipes favourites={favourites} onToggleFav={toggle} />} />
+      <Route path="/recipe/:id" element={<RecipeDetail isFav={isFav} onToggleFav={toggle} />} />
+      <Route path="/shots" element={<ShotsSection />} />
+      <Route path="/search" element={<ExternalSearch />} />
       <Route path="/diffords" element={<DiffordsLinks />} />
       <Route path="/batch" element={<BatchCalculator />} />
       <Route path="/training" element={<TrainingMode />} />
-      <Route
-        path="/favourites"
-        element={<Favourites favourites={favourites} onToggleFav={toggle} />}
-      />
+      <Route path="/favourites" element={<Favourites favourites={favourites} onToggleFav={toggle} />} />
       <Route path="/print" element={<PrintCards />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

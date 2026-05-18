@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import AllergenChip from './ui/AllergenChip'
 import FlavorTag from './ui/FlavorTag'
 import BatchDial from './ui/BatchDial'
+import { useRecipeImage } from '../hooks/useRecipeImage'
 
 const calcBatch = (ingredients, servings) =>
   ingredients.map(ing => {
@@ -12,42 +13,36 @@ const calcBatch = (ingredients, servings) =>
     }
     const totalMl = ing.amount * servings
     const bottles = ing.bottleSize ? Math.ceil(totalMl / ing.bottleSize) : null
-    const leftover = bottles ? (bottles * ing.bottleSize) - totalMl : null
-    return { ...ing, totalMl, bottles, leftover, batchable: true }
+    return { ...ing, totalMl, bottles, batchable: true }
   })
 
 const DIFFICULTY = ['', '●○○', '●●○', '●●●']
 
-export default function RecipeCard({ recipe, isFav, onToggleFav, compact = false }) {
+export default function RecipeCard({ recipe, isFav, onToggleFav }) {
   const [flipped, setFlipped] = useState(false)
   const [servings, setServings] = useState(1)
   const [storyOpen, setStoryOpen] = useState(false)
-  const [variationsOpen, setVariationsOpen] = useState(false)
   const navigate = useNavigate()
-
+  const imageSrc = useRecipeImage(recipe)
   const batchedIngredients = calcBatch(recipe.ingredients, servings)
 
-  const cardHeight = compact ? 'h-80' : 'h-96 md:h-[420px]'
-
   return (
-    <div
-      className={`perspective w-full ${cardHeight} recipe-card-hover`}
-    >
+    <div className="perspective w-full h-96 md:h-[420px] recipe-card-hover">
       <motion.div
         className="relative w-full h-full preserve-3d"
         animate={{ rotateY: flipped ? 180 : 0 }}
         transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
       >
-        {/* ── FRONT ─────────────────────────────────────── */}
+        {/* ── FRONT ───────────────────────────────── */}
         <div
           className="absolute inset-0 backface-hidden rounded-sm overflow-hidden cursor-pointer"
           style={{ border: '1px solid var(--border-gold)' }}
           onClick={() => setFlipped(true)}
         >
-          {/* Image */}
-          {recipe.image || recipe.imageUrl ? (
+          {/* Image / colour bg */}
+          {imageSrc ? (
             <img
-              src={recipe.image || recipe.imageUrl}
+              src={imageSrc}
               alt={recipe.name}
               className="absolute inset-0 w-full h-full object-cover"
               onError={e => { e.target.style.display = 'none' }}
@@ -55,16 +50,14 @@ export default function RecipeCard({ recipe, isFav, onToggleFav, compact = false
           ) : (
             <div
               className="absolute inset-0"
-              style={{
-                background: `linear-gradient(160deg, ${recipe.colour}cc 0%, ${recipe.colour}44 50%, #0a0908 100%)`,
-              }}
+              style={{ background: `linear-gradient(160deg, ${recipe.colour}cc 0%, ${recipe.colour}44 50%, #0a0908 100%)` }}
             />
           )}
 
           {/* Gradient overlay */}
           <div
             className="absolute inset-0"
-            style={{ background: 'linear-gradient(to top, rgba(10,9,8,0.95) 0%, rgba(10,9,8,0.3) 50%, transparent 100%)' }}
+            style={{ background: 'linear-gradient(to top, rgba(10,9,8,0.96) 0%, rgba(10,9,8,0.35) 55%, transparent 100%)' }}
           />
 
           {/* Deco corners */}
@@ -74,21 +67,20 @@ export default function RecipeCard({ recipe, isFav, onToggleFav, compact = false
           <div className="absolute bottom-2 right-2 w-4 h-4 border-b border-r" style={{ borderColor: 'var(--gold)', opacity: 0.5 }} />
 
           {/* Source badge */}
-          <div className="absolute top-3 left-3 flex gap-1">
+          <div className="absolute top-3 left-3">
             <span
               className="px-1.5 py-0.5 text-xs rounded-sm"
               style={{
                 background: recipe.source === 'house' ? 'rgba(196,145,61,0.3)' : 'rgba(120,144,112,0.3)',
                 color: recipe.source === 'house' ? 'var(--gold-light)' : '#a0c098',
                 border: `1px solid ${recipe.source === 'house' ? 'var(--border-gold)' : 'rgba(120,144,112,0.3)'}`,
-                fontFamily: 'DM Sans, sans-serif',
               }}
             >
-              {recipe.source === 'house' ? 'House' : recipe.source === 'external' ? 'External' : "Difford's"}
+              {recipe.source === 'house' ? 'House' : 'External'}
             </span>
           </div>
 
-          {/* Fav button */}
+          {/* Fav */}
           {onToggleFav && (
             <button
               onClick={e => { e.stopPropagation(); onToggleFav(recipe.id) }}
@@ -101,13 +93,26 @@ export default function RecipeCard({ recipe, isFav, onToggleFav, compact = false
 
           {/* Bottom info */}
           <div className="absolute bottom-0 left-0 right-0 p-3">
+            {/* Fun fact chip — always visible */}
+            {recipe.talkingPoint && (
+              <div
+                className="flex items-start gap-1.5 px-2 py-1.5 rounded-sm mb-2"
+                style={{ background: 'rgba(196,145,61,0.18)', border: '1px solid rgba(196,145,61,0.25)' }}
+              >
+                <span style={{ color: 'var(--gold)', fontSize: '0.65rem', flexShrink: 0, marginTop: 1 }}>✦</span>
+                <p className="text-xs italic leading-tight" style={{ color: 'var(--gold-light)' }}>
+                  {recipe.talkingPoint}
+                </p>
+              </div>
+            )}
+
             <h3
               className="font-head italic leading-tight mb-1"
               style={{ color: 'var(--text-primary)', fontSize: 'clamp(1.1rem, 3vw, 1.4rem)' }}
             >
               {recipe.name}
             </h3>
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-1.5">
               <span className="text-xs" style={{ color: 'var(--text-second)' }}>{recipe.category}</span>
               {recipe.difficulty > 0 && (
                 <span className="text-xs" style={{ color: 'var(--gold)' }}>{DIFFICULTY[recipe.difficulty]}</span>
@@ -116,28 +121,22 @@ export default function RecipeCard({ recipe, isFav, onToggleFav, compact = false
             <div className="flex flex-wrap gap-1">
               {recipe.flavour.slice(0, 3).map(f => <FlavorTag key={f} tag={f} />)}
             </div>
-            <p
-              className="text-xs mt-2 opacity-60"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              Tap to flip
+            <p className="text-xs mt-1.5 opacity-50" style={{ color: 'var(--text-muted)' }}>
+              Tap to flip ↩
             </p>
           </div>
         </div>
 
-        {/* ── BACK ──────────────────────────────────────── */}
+        {/* ── BACK ────────────────────────────────── */}
         <div
           className="absolute inset-0 backface-hidden rounded-sm overflow-y-auto"
           style={{ transform: 'rotateY(180deg)', background: 'var(--surface)', border: '1px solid var(--border-gold)' }}
         >
           <div className="p-4">
-            {/* Back header */}
+            {/* Header */}
             <div className="flex items-start justify-between mb-3">
               <div>
-                <h3
-                  className="font-head italic leading-tight"
-                  style={{ color: 'var(--gold-light)', fontSize: '1.1rem' }}
-                >
+                <h3 className="font-head italic" style={{ color: 'var(--gold-light)', fontSize: '1.1rem' }}>
                   {recipe.name}
                 </h3>
                 <p className="text-xs" style={{ color: 'var(--text-second)' }}>
@@ -156,36 +155,30 @@ export default function RecipeCard({ recipe, isFav, onToggleFav, compact = false
             {/* Batch dial */}
             {recipe.batchable && (
               <div className="mb-3">
-                <p className="text-xs mb-1.5" style={{ color: 'var(--text-muted)' }}>Servings</p>
+                <p className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>Servings</p>
                 <BatchDial servings={servings} onChange={setServings} />
               </div>
             )}
 
             {/* Ingredients */}
             <div className="mb-3">
-              <p
-                className="text-xs uppercase tracking-widest mb-1.5"
-                style={{ color: 'var(--text-muted)', letterSpacing: '0.12em' }}
-              >
+              <p className="text-xs uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
                 Ingredients
               </p>
               <ul className="space-y-1">
                 {batchedIngredients.map((ing, i) => (
                   <li key={i} className="flex items-baseline gap-2 text-sm">
-                    {ing.batchable !== false && ing.amount ? (
-                      <span className="font-semibold tabular-nums flex-shrink-0" style={{ color: 'var(--gold)', minWidth: '3rem' }}>
-                        {ing.totalMl ? `${ing.totalMl}ml` : `${ing.amount}${ing.unit}`}
-                      </span>
-                    ) : (
-                      <span className="font-semibold flex-shrink-0" style={{ color: 'var(--text-muted)', minWidth: '3rem' }}>
-                        {ing.amount ? `${ing.amount} ${ing.unit}` : ing.unit}
-                      </span>
-                    )}
+                    <span
+                      className="font-semibold tabular-nums flex-shrink-0"
+                      style={{ color: ing.batchable !== false ? 'var(--gold)' : 'var(--text-muted)', minWidth: '3.2rem' }}
+                    >
+                      {ing.batchable !== false && ing.amount
+                        ? (ing.totalMl ? `${ing.totalMl}ml` : `${ing.amount} ${ing.unit}`)
+                        : (ing.amount ? `${ing.amount} ${ing.unit}` : ing.unit || '—')}
+                    </span>
                     <span style={{ color: 'var(--text-primary)' }}>{ing.name}</span>
                     {servings > 1 && ing.bottles && (
-                      <span className="text-xs ml-auto" style={{ color: 'var(--text-muted)' }}>
-                        ×{ing.bottles} btl
-                      </span>
+                      <span className="text-xs ml-auto" style={{ color: 'var(--text-muted)' }}>×{ing.bottles}</span>
                     )}
                   </li>
                 ))}
@@ -194,10 +187,7 @@ export default function RecipeCard({ recipe, isFav, onToggleFav, compact = false
 
             {/* Method */}
             <div className="mb-3">
-              <p
-                className="text-xs uppercase tracking-widest mb-1.5"
-                style={{ color: 'var(--text-muted)', letterSpacing: '0.12em' }}
-              >
+              <p className="text-xs uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
                 Method
               </p>
               <ol className="space-y-1">
@@ -210,8 +200,11 @@ export default function RecipeCard({ recipe, isFav, onToggleFav, compact = false
               </ol>
             </div>
 
-            {/* Garnish strip */}
-            <div className="flex gap-3 text-xs mb-3 p-2 rounded-sm" style={{ background: 'var(--surface-high)', border: '1px solid var(--border)' }}>
+            {/* Garnish */}
+            <div
+              className="flex gap-3 text-xs mb-3 p-2 rounded-sm"
+              style={{ background: 'var(--surface-high)', border: '1px solid var(--border)' }}
+            >
               <span style={{ color: 'var(--text-muted)' }}>Garnish:</span>
               <span style={{ color: 'var(--text-second)' }}>{recipe.garnish || '—'}</span>
             </div>
@@ -246,40 +239,29 @@ export default function RecipeCard({ recipe, isFav, onToggleFav, compact = false
                       <p className="text-xs mt-1 pb-1" style={{ color: 'var(--text-second)', lineHeight: 1.6 }}>
                         {recipe.story}
                       </p>
-                      {recipe.talkingPoint && (
-                        <p className="text-xs italic mt-1" style={{ color: 'var(--gold)', lineHeight: 1.5 }}>
-                          💬 {recipe.talkingPoint}
-                        </p>
-                      )}
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
             )}
 
-            {/* Difford's link */}
             {recipe.diffordsLink && (
               <a
                 href={recipe.diffordsLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-xs mt-1"
+                className="flex items-center gap-1 text-xs mb-2"
                 style={{ color: 'var(--text-muted)' }}
                 onClick={e => e.stopPropagation()}
               >
-                <span>Difford's Guide →</span>
+                Difford's Guide →
               </a>
             )}
 
-            {/* Full recipe link */}
             <button
               onClick={() => navigate(`/recipe/${recipe.id}`)}
-              className="mt-3 w-full py-2 text-xs rounded-sm"
-              style={{
-                background: 'transparent',
-                border: '1px solid var(--border-gold)',
-                color: 'var(--gold)',
-              }}
+              className="mt-2 w-full py-2 text-xs rounded-sm"
+              style={{ background: 'transparent', border: '1px solid var(--border-gold)', color: 'var(--gold)' }}
             >
               Full Recipe →
             </button>

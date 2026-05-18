@@ -75,7 +75,7 @@ function PrintCard({ recipe }) {
 
       {/* Footer */}
       <div style={{ position: 'absolute', bottom: 8, left: '50%', transform: 'translateX(-50%)', fontSize: 7, color: '#c4913d', letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic', whiteSpace: 'nowrap' }}>
-        The Bar Bible
+        Bartender's Black Book
       </div>
     </div>
   )

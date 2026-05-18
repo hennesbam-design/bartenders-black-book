@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 
-const KEY = 'bar-bible-favourites'
+const KEY = 'bbb-favourites'
 
 const load = () => {
   try { return JSON.parse(localStorage.getItem(KEY)) || [] }

@@ -9,6 +9,15 @@ const SECTIONS = [
     sub: `${coppaRecipes.length} cocktails`,
     icon: '◆',
     accent: '#c4913d',
+    desc: 'Your full menu',
+  },
+  {
+    to: '/shots',
+    label: 'Shots',
+    sub: 'Quick serves',
+    icon: '⬡',
+    accent: '#a85050',
+    desc: 'Bombs & shooters',
   },
   {
     to: '/search',
@@ -16,6 +25,7 @@ const SECTIONS = [
     sub: 'TheCocktailDB',
     icon: '◈',
     accent: '#7a9070',
+    desc: 'Thousands of recipes',
   },
   {
     to: '/diffords',
@@ -23,20 +33,23 @@ const SECTIONS = [
     sub: 'Reference links',
     icon: '◉',
     accent: '#9070a8',
+    desc: 'Classic references',
   },
   {
     to: '/batch',
-    label: 'Batch Calculator',
+    label: 'Batch Calc',
     sub: 'Scale any recipe',
-    icon: '⬡',
+    icon: '⊞',
     accent: '#70908a',
+    desc: 'Events & prep',
   },
   {
     to: '/training',
-    label: 'Training Mode',
+    label: 'Training',
     sub: 'Stories & selling lines',
     icon: '◎',
     accent: '#a87060',
+    desc: 'Quick-fire trivia',
   },
   {
     to: '/favourites',
@@ -44,6 +57,7 @@ const SECTIONS = [
     sub: 'Saved recipes',
     icon: '♦',
     accent: '#c4913d',
+    desc: 'Your saved list',
   },
   {
     to: '/print',
@@ -51,56 +65,77 @@ const SECTIONS = [
     sub: 'A6 recipe cards',
     icon: '▣',
     accent: '#607890',
+    desc: 'Physical reference',
   },
 ]
 
 const container = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.06 } },
+  show: { transition: { staggerChildren: 0.07 } },
 }
 const item = {
-  hidden: { opacity: 0, y: 16 },
+  hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] } },
 }
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen px-4 py-8 max-w-lg mx-auto">
-      {/* Header */}
+    <div
+      className="min-h-screen flex flex-col"
+      style={{ background: 'var(--bg)' }}
+    >
+      {/* Header — takes up deliberate space on phone */}
       <motion.div
-        initial={{ opacity: 0, y: -12 }}
+        initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="text-center mb-8"
+        className="pt-10 pb-6 px-6 text-center"
       >
-        <div className="flex items-center justify-center gap-2 mb-1">
-          <div className="h-px flex-1" style={{ background: 'var(--border-gold)' }} />
-          <div className="w-2 h-2 rotate-45" style={{ background: 'var(--gold)', opacity: 0.7 }} />
-          <div className="h-px flex-1" style={{ background: 'var(--border-gold)' }} />
+        {/* Top rule */}
+        <div className="flex items-center gap-3 mb-5">
+          <div className="flex-1 h-px" style={{ background: 'linear-gradient(to right, transparent, rgba(196,145,61,0.5), transparent)' }} />
+          <div className="flex gap-1 items-center">
+            <div className="w-1.5 h-1.5 rotate-45" style={{ background: '#c4913d', opacity: 0.7 }} />
+            <div className="w-2 h-2 rotate-45" style={{ background: '#e8c070' }} />
+            <div className="w-1.5 h-1.5 rotate-45" style={{ background: '#c4913d', opacity: 0.7 }} />
+          </div>
+          <div className="flex-1 h-px" style={{ background: 'linear-gradient(to left, transparent, rgba(196,145,61,0.5), transparent)' }} />
         </div>
+
         <h1
-          className="font-head italic mt-2"
-          style={{ color: 'var(--gold-light)', fontSize: '2rem', letterSpacing: '0.02em' }}
+          className="font-head italic leading-none mb-1"
+          style={{ color: 'var(--gold-light)', fontSize: 'clamp(2rem, 7vw, 2.8rem)', letterSpacing: '0.01em' }}
         >
-          The Bar Bible
+          Bartender's Black Book
         </h1>
-        <p className="text-xs tracking-widest uppercase mt-1" style={{ color: 'var(--text-muted)', letterSpacing: '0.15em' }}>
+        <p
+          className="tracking-widest uppercase mt-2"
+          style={{ color: 'var(--text-muted)', fontSize: '0.6rem', letterSpacing: '0.22em' }}
+        >
           Spring 2026
         </p>
+
+        {/* Bottom rule */}
+        <div className="flex items-center gap-3 mt-5">
+          <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
+          <div className="w-1.5 h-1.5 rotate-45" style={{ background: 'var(--gold)', opacity: 0.4 }} />
+          <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
+        </div>
       </motion.div>
 
-      {/* Nav grid */}
+      {/* Nav grid — grows to fill remaining screen */}
       <motion.div
         variants={container}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-2 gap-3"
+        className="flex-1 grid grid-cols-2 gap-3 px-4 pb-6"
+        style={{ alignContent: 'start' }}
       >
         {SECTIONS.map((s) => (
-          <motion.div key={s.to} variants={item}>
+          <motion.div key={s.to} variants={item} className="h-full">
             <Link
               to={s.to}
-              className="deco-corner block p-4 rounded-sm recipe-card-hover"
+              className="deco-corner flex flex-col justify-between h-full min-h-28 p-4 rounded-sm recipe-card-hover"
               style={{
                 background: 'var(--surface)',
                 border: '1px solid var(--border)',
@@ -108,40 +143,28 @@ export default function Dashboard() {
               }}
             >
               <div
-                className="text-xl mb-2"
+                className="text-2xl mb-2"
                 style={{ color: s.accent }}
               >
                 {s.icon}
               </div>
-              <div
-                className="font-semibold text-sm leading-tight mb-0.5"
-                style={{ color: 'var(--text-primary)', fontFamily: 'DM Sans, sans-serif' }}
-              >
-                {s.label}
-              </div>
-              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                {s.sub}
+              <div>
+                <div
+                  className="font-semibold leading-tight mb-0.5"
+                  style={{ color: 'var(--text-primary)', fontSize: '1rem', fontFamily: 'DM Sans, sans-serif' }}
+                >
+                  {s.label}
+                </div>
+                <div className="text-xs mb-1" style={{ color: 'var(--text-second)' }}>
+                  {s.sub}
+                </div>
+                <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                  {s.desc}
+                </div>
               </div>
             </Link>
           </motion.div>
         ))}
-
-        {/* Home card fills last slot */}
-        <motion.div variants={item}>
-          <Link
-            to="/"
-            className="deco-corner block p-4 rounded-sm recipe-card-hover"
-            style={{
-              background: 'var(--surface)',
-              border: '1px solid var(--border)',
-              textDecoration: 'none',
-            }}
-          >
-            <div className="text-xl mb-2" style={{ color: 'var(--text-muted)' }}>⊙</div>
-            <div className="font-semibold text-sm leading-tight mb-0.5" style={{ color: 'var(--text-primary)' }}>Home</div>
-            <div className="text-xs" style={{ color: 'var(--text-muted)' }}>Book cover</div>
-          </Link>
-        </motion.div>
       </motion.div>
     </div>
   )

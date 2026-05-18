@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import "tailwindcss";
+
+:root {
+  --bg: #0a0908;
+  --surface: #141210;
+  --surface-high: #1e1a16;
+  --border: #2e2720;
+  --border-gold: rgba(196, 145, 61, 0.267);
+  --gold: #c4913d;
+  --gold-light: #e8c070;
+  --text-primary: #f5ede0;
+  --text-second: #a89070;
+  --text-muted: #5e4f38;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body, #root {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+  text-align: left;
+  width: 100%;
+  max-width: 100%;
+  border: none;
+  min-height: 100svh;
+  display: block;
+}
+
+body { overscroll-behavior: none; }
+
+h1, h2, h3, .font-head { font-family: 'Cormorant Garamond', serif; }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.preserve-3d { transform-style: preserve-3d; }
+.backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.perspective { perspective: 1200px; }
+
+.deco-corner { position: relative; }
+.deco-corner::before,
+.deco-corner::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--gold);
+  border-style: solid;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.deco-corner::before { top: 6px; left: 6px; border-width: 1px 0 0 1px; }
+.deco-corner::after { bottom: 6px; right: 6px; border-width: 0 1px 1px 0; }
+
+.diamond-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.diamond-divider::before,
+.diamond-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.diamond-gem {
+  width: 5px; height: 5px;
+  background: var(--gold);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+.recipe-card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.recipe-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(196,145,61,0.12);
+}

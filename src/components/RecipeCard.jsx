@@ -23,7 +23,7 @@ export default function RecipeCard({ recipe, isFav, onToggleFav }) {
   const [servings, setServings] = useState(1)
   const [storyOpen, setStoryOpen] = useState(false)
   const navigate = useNavigate()
-  const imageSrc = useRecipeImage(recipe)
+  const { src: imageSrc, onError: onImageError } = useRecipeImage(recipe)
   const batchedIngredients = calcBatch(recipe.ingredients, servings)
 
   return (
@@ -45,7 +45,7 @@ export default function RecipeCard({ recipe, isFav, onToggleFav }) {
               src={imageSrc}
               alt={recipe.name}
               className="absolute inset-0 w-full h-full object-cover"
-              onError={e => { e.target.style.display = 'none' }}
+              onError={onImageError}
             />
           ) : (
             <div
@@ -131,6 +131,12 @@ export default function RecipeCard({ recipe, isFav, onToggleFav }) {
         <div
           className="absolute inset-0 backface-hidden rounded-sm overflow-y-auto"
           style={{ transform: 'rotateY(180deg)', background: 'var(--surface)', border: '1px solid var(--border-gold)' }}
+          onClick={e => {
+            const tag = e.target.tagName.toLowerCase()
+            if (!['button', 'a', 'input', 'select', 'textarea'].includes(tag) && !e.target.closest('button, a')) {
+              setFlipped(false)
+            }
+          }}
         >
           <div className="p-4">
             {/* Header */}
@@ -144,7 +150,7 @@ export default function RecipeCard({ recipe, isFav, onToggleFav }) {
                 </p>
               </div>
               <button
-                onClick={() => setFlipped(false)}
+                onClick={e => { e.stopPropagation(); setFlipped(false) }}
                 className="text-xs px-2 py-1 rounded-sm flex-shrink-0"
                 style={{ color: 'var(--text-muted)', border: '1px solid var(--border)', background: 'var(--surface-high)' }}
               >

@@ -1,30 +1,37 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 const cache = {}
 
 export function useRecipeImage(recipe) {
   const [src, setSrc] = useState(recipe.image || recipe.imageUrl || null)
+  const [errored, setErrored] = useState(false)
+
+  const searchName = recipe.cdbSearchName || recipe.name
 
   useEffect(() => {
-    if (src) return
-    const name = recipe.name
-    if (cache[name]) { setSrc(cache[name]); return }
+    if (src && !errored) return
+    if (cache[searchName]) { setSrc(cache[searchName]); return }
 
     let cancelled = false
-    fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(name)}`)
+    fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(searchName)}`)
       .then(r => r.json())
       .then(data => {
         if (cancelled) return
         const img = data?.drinks?.[0]?.strDrinkThumb
         if (img) {
-          cache[name] = img
+          cache[searchName] = img
           setSrc(img)
         }
       })
       .catch(() => {})
 
     return () => { cancelled = true }
-  }, [recipe.name, src])
+  }, [searchName, src, errored])
 
-  return src
+  const onError = useCallback(() => {
+    setErrored(true)
+    setSrc(null)
+  }, [])
+
+  return { src, onError }
 }

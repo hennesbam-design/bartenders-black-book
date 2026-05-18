@@ -144,15 +144,15 @@ export default function WelcomeBook() {
             {/* Tagline */}
             <p
               className="text-center tracking-widest uppercase mb-2"
-              style={{ color: 'rgba(232,192,112,0.55)', fontSize: '0.62rem', letterSpacing: '0.25em' }}
+              style={{ color: 'rgba(232,192,112,0.85)', fontSize: '0.72rem', letterSpacing: '0.22em' }}
             >
               Your recipes · Your way · Anywhere
             </p>
             <p
               className="text-center font-head italic"
-              style={{ color: 'rgba(196,145,61,0.35)', fontSize: '0.9rem' }}
+              style={{ color: 'rgba(196,145,61,0.7)', fontSize: '1rem' }}
             >
-              Spring 2026
+              Coppa Club · 2026
             </p>
 
             {/* Bottom ornament */}
@@ -168,10 +168,10 @@ export default function WelcomeBook() {
 
             {/* Tap hint */}
             <motion.p
-              animate={{ opacity: [0.3, 0.75, 0.3] }}
+              animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
               className="tracking-widest uppercase text-center"
-              style={{ color: 'rgba(196,145,61,0.5)', fontSize: '0.6rem', letterSpacing: '0.3em' }}
+              style={{ color: 'rgba(232,192,112,0.9)', fontSize: '0.72rem', letterSpacing: '0.28em' }}
             >
               ✦ &nbsp; Tap to open &nbsp; ✦
             </motion.p>
@@ -225,13 +225,13 @@ function GoldTitle({ line1, line2 }) {
       `}</style>
       <h1
         className="gold-shimmer font-head italic leading-none block"
-        style={{ fontSize: 'clamp(2.8rem, 10vw, 4.2rem)', letterSpacing: '0.01em' }}
+        style={{ fontSize: 'clamp(3.2rem, 12vw, 5rem)', letterSpacing: '0.01em' }}
       >
         {line1}
       </h1>
       <h1
         className="gold-shimmer font-head italic leading-none block mt-1"
-        style={{ fontSize: 'clamp(2.8rem, 10vw, 4.2rem)', letterSpacing: '0.01em' }}
+        style={{ fontSize: 'clamp(3.2rem, 12vw, 5rem)', letterSpacing: '0.01em' }}
       >
         {line2}
       </h1>

@@ -3,17 +3,17 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { coppaRecipes } from '../data/coppaRecipes'
 import RecipeCard from './RecipeCard'
+import PrepCard from './PrepCard'
 import SearchBar from './ui/SearchBar'
+import { useBarPrep } from '../hooks/useBarPrep'
 
-const METHODS = ['All', 'Build', 'Shake', 'Stir', 'Build & Muddle', 'Shake + Float', 'Shake + Build']
-const FLAVOURS = [...new Set(coppaRecipes.flatMap(r => r.flavour))].sort()
 const CATEGORIES = ['All', ...new Set(coppaRecipes.map(r => r.category))]
 
 export default function HouseRecipes({ favourites, onToggleFav }) {
   const [query, setQuery] = useState('')
   const [method, setMethod] = useState('All')
-  const [flavour, setFlavour] = useState('All')
   const [category, setCategory] = useState('All')
+  const { barPrep, toggleBarPrep } = useBarPrep()
 
   const filtered = useMemo(() => {
     return coppaRecipes.filter(r => {
@@ -21,45 +21,86 @@ export default function HouseRecipes({ favourites, onToggleFav }) {
           !r.category.toLowerCase().includes(query.toLowerCase()) &&
           !r.flavour.some(f => f.toLowerCase().includes(query.toLowerCase()))) return false
       if (method !== 'All' && !r.method.includes(method)) return false
-      if (flavour !== 'All' && !r.flavour.includes(flavour)) return false
       if (category !== 'All' && r.category !== category) return false
       return true
     })
-  }, [query, method, flavour, category])
+  }, [query, method, category])
 
   return (
-    <div className="min-h-screen max-w-2xl mx-auto px-4 py-6">
+    <div className="page">
       {/* Header */}
-      <div className="mb-6">
-        <Link to="/dashboard" className="text-xs mb-3 block" style={{ color: 'var(--text-muted)' }}>← Dashboard</Link>
-        <h2
-          className="font-head italic mb-1"
-          style={{ color: 'var(--gold-light)', fontSize: '1.8rem' }}
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20 }}>
+        <div>
+          <Link to="/dashboard" className="back-link">← Dashboard</Link>
+          <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic', fontSize: '2rem', color: 'var(--gold)', lineHeight: 1.1, marginBottom: 4 }}>
+            House Recipes
+          </h2>
+          <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+            {filtered.length} of {coppaRecipes.length} cocktails
+          </p>
+        </div>
+
+        {/* Bar Prep toggle */}
+        <button
+          onClick={toggleBarPrep}
+          title={barPrep ? 'Exit Bar Prep mode' : 'Enter Bar Prep mode'}
+          style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
+            padding: '8px 12px', borderRadius: 10, cursor: 'pointer',
+            background: barPrep ? 'var(--gold)' : 'var(--surface)',
+            border: `1px solid ${barPrep ? 'var(--gold)' : 'var(--border)'}`,
+            color: barPrep ? '#fff' : 'var(--text-muted)',
+            transition: 'all 0.2s',
+            flexShrink: 0,
+            marginTop: 22,
+          }}
         >
-          House Recipes
-        </h2>
-        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-          {filtered.length} of {coppaRecipes.length} cocktails
-        </p>
+          {/* Eye / reading icon */}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+          <span style={{ fontSize: '0.6rem', fontWeight: 600, fontFamily: 'DM Sans, sans-serif', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            {barPrep ? 'Prep On' : 'Bar Prep'}
+          </span>
+        </button>
       </div>
 
+      {/* Bar prep banner */}
+      {barPrep && (
+        <div style={{
+          background: 'var(--teal-50)', border: '1px solid var(--teal-100)',
+          borderRadius: 10, padding: '10px 14px', marginBottom: 16,
+          display: 'flex', alignItems: 'center', gap: 8,
+        }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="2.5">
+            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+          <p style={{ fontSize: '0.78rem', color: 'var(--teal-700)', fontFamily: 'DM Sans, sans-serif' }}>
+            <strong>Bar Prep mode</strong> — clean view for service. Tap the eye icon to switch back.
+          </p>
+        </div>
+      )}
+
       {/* Search */}
-      <div className="mb-4">
+      <div style={{ marginBottom: 12 }}>
         <SearchBar value={query} onChange={setQuery} />
       </div>
 
-      {/* Filters */}
-      <div className="flex gap-2 mb-4 overflow-x-auto pb-1">
-        {CATEGORIES.slice(0, 6).map(c => (
+      {/* Category pills */}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 10, overflowX: 'auto', paddingBottom: 4, scrollbarWidth: 'none' }}>
+        {CATEGORIES.map(c => (
           <button
             key={c}
             onClick={() => setCategory(c === category ? 'All' : c)}
-            className="flex-shrink-0 px-3 py-1 rounded-sm text-xs transition-colors"
             style={{
-              background: category === c ? 'var(--gold)' : 'var(--surface-high)',
-              color: category === c ? '#0a0908' : 'var(--text-second)',
-              border: '1px solid var(--border)',
-              fontWeight: category === c ? 600 : 400,
+              flexShrink: 0, padding: '4px 12px', borderRadius: 999, fontSize: '0.75rem',
+              fontFamily: 'DM Sans, sans-serif', fontWeight: category === c ? 600 : 400,
+              cursor: 'pointer', transition: 'all 0.15s',
+              background: category === c ? 'var(--gold)' : 'var(--surface)',
+              color: category === c ? '#fff' : 'var(--text-second)',
+              border: `1px solid ${category === c ? 'var(--gold)' : 'var(--border)'}`,
             }}
           >
             {c}
@@ -67,17 +108,19 @@ export default function HouseRecipes({ favourites, onToggleFav }) {
         ))}
       </div>
 
-      {/* Method filter */}
-      <div className="flex gap-2 mb-5 overflow-x-auto pb-1">
+      {/* Method pills */}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 20, overflowX: 'auto', paddingBottom: 4, scrollbarWidth: 'none' }}>
         {['All', 'Build', 'Shake', 'Stir'].map(m => (
           <button
             key={m}
             onClick={() => setMethod(m === method ? 'All' : m)}
-            className="flex-shrink-0 px-3 py-1 rounded-sm text-xs transition-colors"
             style={{
-              background: method === m ? 'rgba(196,145,61,0.2)' : 'var(--surface)',
+              flexShrink: 0, padding: '4px 12px', borderRadius: 999, fontSize: '0.75rem',
+              fontFamily: 'DM Sans, sans-serif', cursor: 'pointer', transition: 'all 0.15s',
+              background: method === m ? 'var(--teal-50)' : 'transparent',
               color: method === m ? 'var(--gold)' : 'var(--text-muted)',
-              border: `1px solid ${method === m ? 'var(--border-gold)' : 'var(--border)'}`,
+              border: `1px solid ${method === m ? 'var(--teal-100)' : 'var(--border)'}`,
+              fontWeight: method === m ? 600 : 400,
             }}
           >
             {m}
@@ -85,18 +128,31 @@ export default function HouseRecipes({ favourites, onToggleFav }) {
         ))}
       </div>
 
-      {/* Grid */}
+      {/* Grid / List */}
       {filtered.length === 0 ? (
-        <div className="text-center py-16" style={{ color: 'var(--text-muted)' }}>
-          <p className="font-head italic text-xl mb-1" style={{ color: 'var(--gold)' }}>No matches</p>
-          <p className="text-sm">Try a different search or filter</p>
+        <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--text-muted)' }}>
+          <p style={{ fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic', fontSize: '1.4rem', color: 'var(--gold)', marginBottom: 4 }}>No matches</p>
+          <p style={{ fontSize: '0.88rem' }}>Try a different search or filter</p>
         </div>
+      ) : barPrep ? (
+        /* Bar Prep: single-column clean list */
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+          style={{ display: 'flex', flexDirection: 'column', gap: 10 }}
+        >
+          {filtered.map(recipe => (
+            <PrepCard key={recipe.id} recipe={recipe} />
+          ))}
+        </motion.div>
       ) : (
+        /* Normal: 2-column flip cards */
         <motion.div
           className="grid grid-cols-1 sm:grid-cols-2 gap-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.3 }}
         >
           {filtered.map(recipe => (
             <RecipeCard

@@ -1,17 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
 @import "tailwindcss";
 
 :root {
-  --bg: #0a0908;
-  --surface: #141210;
-  --surface-high: #1e1a16;
-  --border: #2e2720;
-  --border-gold: rgba(196, 145, 61, 0.267);
-  --gold: #c4913d;
-  --gold-light: #e8c070;
-  --text-primary: #f5ede0;
-  --text-second: #a89070;
-  --text-muted: #5e4f38;
+  /* ── Surfaces ── */
+  --bg:           #f2f6f6;
+  --surface:      #ffffff;
+  --surface-high: #e8f0f0;
+
+  /* ── Borders ── */
+  --border:       #d4e0e1;
+  --border-gold:  rgba(0, 116, 110, 0.22);
+
+  /* ── Brand ── */
+  --gold:         #00746e;   /* primary teal — replaces gold throughout */
+  --gold-light:   #009d96;   /* lighter teal */
+
+  /* ── Text ── */
+  --text-primary: #0d1f20;
+  --text-second:  #3a5258;
+  --text-muted:   #7a9195;
+
+  /* ── Extra teal scale ── */
+  --teal-50:  #e6f5f4;
+  --teal-100: #b3e2df;
+  --teal-500: #00746e;
+  --teal-700: #005450;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -39,48 +52,66 @@ h1, h2, h3, .font-head { font-family: 'Cormorant Garamond', serif; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
+/* ── 3-D card flip ── */
 .preserve-3d { transform-style: preserve-3d; }
 .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 .perspective { perspective: 1200px; }
 
-.deco-corner { position: relative; }
-.deco-corner::before,
-.deco-corner::after {
-  content: '';
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  border-color: var(--gold);
-  border-style: solid;
-  opacity: 0.5;
-  pointer-events: none;
+/* ── Hover lift ── */
+.recipe-card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.deco-corner::before { top: 6px; left: 6px; border-width: 1px 0 0 1px; }
-.deco-corner::after { bottom: 6px; right: 6px; border-width: 0 1px 1px 0; }
+.recipe-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0,116,110,0.10);
+}
 
-.diamond-divider {
-  display: flex;
+/* ── Teal pill / chip ── */
+.chip {
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
-.diamond-divider::before,
-.diamond-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
+.chip-teal  { background: var(--teal-50); color: var(--teal-700); }
+.chip-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
+
+/* ── Page layout helper ── */
+.page { min-height: 100svh; max-width: 680px; margin: 0 auto; padding: 20px 16px 48px; }
+.page-header { margin-bottom: 24px; }
+
+/* ── Thin divider ── */
+.divider { height: 1px; background: var(--border); }
+.divider-teal { height: 1px; background: var(--teal-100); }
+
+/* ── Back nav link ── */
+.back-link {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 0.78rem; color: var(--text-muted);
+  text-decoration: none; margin-bottom: 16px;
+}
+.back-link:hover { color: var(--teal-500); }
+
+/* ── Section label ── */
+.label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* ── Diamond divider (kept for backward compat) ── */
+.diamond-divider { display: flex; align-items: center; gap: 8px; }
+.diamond-divider::before, .diamond-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
 }
 .diamond-gem {
   width: 5px; height: 5px;
   background: var(--gold);
   transform: rotate(45deg);
   flex-shrink: 0;
-}
-
-.recipe-card-hover {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.recipe-card-hover:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(196,145,61,0.12);
 }

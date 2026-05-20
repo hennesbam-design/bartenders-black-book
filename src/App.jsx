@@ -11,6 +11,7 @@ import TrainingMode from './components/TrainingMode'
 import Favourites from './components/Favourites'
 import PrintCards from './components/PrintCards'
 import ShotsSection from './components/ShotsSection'
+import StyleGuide from './components/StyleGuide'
 
 export default function App() {
   const { favourites, toggle, isFav } = useFavourites()
@@ -28,6 +29,7 @@ export default function App() {
       <Route path="/training" element={<TrainingMode />} />
       <Route path="/favourites" element={<Favourites favourites={favourites} onToggleFav={toggle} />} />
       <Route path="/print" element={<PrintCards />} />
+      <Route path="/styleguide" element={<StyleGuide />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

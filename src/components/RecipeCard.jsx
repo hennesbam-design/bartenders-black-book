@@ -31,12 +31,12 @@ export default function RecipeCard({ recipe, isFav, onToggleFav }) {
       <motion.div
         className="relative w-full h-full preserve-3d"
         animate={{ rotateY: flipped ? 180 : 0 }}
-        transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+        transition={{ duration: 0.55, ease: [0.4, 0, 0.2, 1] }}
       >
-        {/* ── FRONT ───────────────────────────────── */}
+        {/* ── FRONT ─────────────────────────────────── */}
         <div
-          className="absolute inset-0 backface-hidden rounded-sm overflow-hidden cursor-pointer"
-          style={{ border: '1px solid var(--border-gold)' }}
+          className="absolute inset-0 backface-hidden overflow-hidden cursor-pointer"
+          style={{ borderRadius: 16, border: '1px solid var(--border)', boxShadow: '0 2px 12px rgba(0,0,0,0.07)' }}
           onClick={() => setFlipped(true)}
         >
           {/* Image / colour bg */}
@@ -50,32 +50,28 @@ export default function RecipeCard({ recipe, isFav, onToggleFav }) {
           ) : (
             <div
               className="absolute inset-0"
-              style={{ background: `linear-gradient(160deg, ${recipe.colour}cc 0%, ${recipe.colour}44 50%, #0a0908 100%)` }}
+              style={{ background: `linear-gradient(160deg, ${recipe.colour}cc 0%, ${recipe.colour}66 50%, ${recipe.colour}22 100%)` }}
             />
           )}
 
-          {/* Gradient overlay */}
+          {/* Gradient overlay — lighter for light theme */}
           <div
             className="absolute inset-0"
-            style={{ background: 'linear-gradient(to top, rgba(10,9,8,0.96) 0%, rgba(10,9,8,0.35) 55%, transparent 100%)' }}
+            style={{ background: 'linear-gradient(to top, rgba(10,20,20,0.88) 0%, rgba(10,20,20,0.2) 55%, transparent 100%)' }}
           />
-
-          {/* Deco corners */}
-          <div className="absolute top-2 left-2 w-4 h-4 border-t border-l" style={{ borderColor: 'var(--gold)', opacity: 0.5 }} />
-          <div className="absolute top-2 right-2 w-4 h-4 border-t border-r" style={{ borderColor: 'var(--gold)', opacity: 0.5 }} />
-          <div className="absolute bottom-2 left-2 w-4 h-4 border-b border-l" style={{ borderColor: 'var(--gold)', opacity: 0.5 }} />
-          <div className="absolute bottom-2 right-2 w-4 h-4 border-b border-r" style={{ borderColor: 'var(--gold)', opacity: 0.5 }} />
 
           {/* Source badge */}
           <div className="absolute top-3 left-3">
-            <span
-              className="px-1.5 py-0.5 text-xs rounded-sm"
-              style={{
-                background: recipe.source === 'house' ? 'rgba(196,145,61,0.3)' : 'rgba(120,144,112,0.3)',
-                color: recipe.source === 'house' ? 'var(--gold-light)' : '#a0c098',
-                border: `1px solid ${recipe.source === 'house' ? 'var(--border-gold)' : 'rgba(120,144,112,0.3)'}`,
-              }}
-            >
+            <span style={{
+              background: recipe.source === 'house' ? 'rgba(0,116,110,0.85)' : 'rgba(40,60,60,0.7)',
+              color: '#fff',
+              fontSize: '0.67rem',
+              padding: '3px 8px',
+              borderRadius: 999,
+              fontFamily: 'DM Sans, sans-serif',
+              fontWeight: 500,
+              letterSpacing: '0.04em',
+            }}>
               {recipe.source === 'house' ? 'House' : 'External'}
             </span>
           </div>
@@ -85,52 +81,69 @@ export default function RecipeCard({ recipe, isFav, onToggleFav }) {
             <button
               onClick={e => { e.stopPropagation(); onToggleFav(recipe.id) }}
               className="absolute top-3 right-3 text-lg transition-transform active:scale-90"
-              style={{ color: isFav ? 'var(--gold)' : 'rgba(196,145,61,0.3)' }}
+              style={{ color: isFav ? '#ff6b6b' : 'rgba(255,255,255,0.4)' }}
             >
-              ♦
+              ♥
             </button>
           )}
 
           {/* Bottom info */}
           <div className="absolute bottom-0 left-0 right-0 p-3">
-            {/* Fun fact chip — always visible */}
+            {/* Talking point */}
             {recipe.talkingPoint && (
-              <div
-                className="flex items-start gap-1.5 px-2 py-1.5 rounded-sm mb-2"
-                style={{ background: 'rgba(196,145,61,0.18)', border: '1px solid rgba(196,145,61,0.25)' }}
-              >
-                <span style={{ color: 'var(--gold)', fontSize: '0.65rem', flexShrink: 0, marginTop: 1 }}>✦</span>
-                <p className="text-xs italic leading-tight" style={{ color: 'var(--gold-light)' }}>
+              <div style={{
+                display: 'flex', alignItems: 'flex-start', gap: 6,
+                padding: '7px 10px',
+                background: 'rgba(0,116,110,0.75)',
+                borderRadius: 8,
+                marginBottom: 8,
+                backdropFilter: 'blur(4px)',
+              }}>
+                <span style={{ color: '#b3e2df', fontSize: '0.6rem', flexShrink: 0, marginTop: 1 }}>✦</span>
+                <p style={{ fontSize: '0.72rem', color: '#e0f5f4', lineHeight: 1.4, fontFamily: 'DM Sans, sans-serif', fontStyle: 'italic' }}>
                   {recipe.talkingPoint}
                 </p>
               </div>
             )}
 
-            <h3
-              className="font-head italic leading-tight mb-1"
-              style={{ color: 'var(--text-primary)', fontSize: 'clamp(1.1rem, 3vw, 1.4rem)' }}
-            >
+            <h3 style={{
+              fontFamily: 'Cormorant Garamond, serif',
+              fontStyle: 'italic',
+              fontSize: 'clamp(1.2rem, 4vw, 1.5rem)',
+              fontWeight: 600,
+              color: '#ffffff',
+              lineHeight: 1.15,
+              marginBottom: 4,
+            }}>
               {recipe.name}
             </h3>
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="text-xs" style={{ color: 'var(--text-second)' }}>{recipe.category}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+              <span style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.7)', fontFamily: 'DM Sans, sans-serif' }}>
+                {recipe.category}
+              </span>
               {recipe.difficulty > 0 && (
-                <span className="text-xs" style={{ color: 'var(--gold)' }}>{DIFFICULTY[recipe.difficulty]}</span>
+                <span style={{ fontSize: '0.65rem', color: '#b3e2df', letterSpacing: 1 }}>{DIFFICULTY[recipe.difficulty]}</span>
               )}
             </div>
-            <div className="flex flex-wrap gap-1">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 4 }}>
               {recipe.flavour.slice(0, 3).map(f => <FlavorTag key={f} tag={f} />)}
             </div>
-            <p className="text-xs mt-1.5 opacity-50" style={{ color: 'var(--text-muted)' }}>
+            <p style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', fontFamily: 'DM Sans, sans-serif', marginTop: 2 }}>
               Tap to flip ↩
             </p>
           </div>
         </div>
 
-        {/* ── BACK ────────────────────────────────── */}
+        {/* ── BACK ───────────────────────────────────── */}
         <div
-          className="absolute inset-0 backface-hidden rounded-sm overflow-y-auto"
-          style={{ transform: 'rotateY(180deg)', background: 'var(--surface)', border: '1px solid var(--border-gold)' }}
+          className="absolute inset-0 backface-hidden overflow-y-auto"
+          style={{
+            transform: 'rotateY(180deg)',
+            background: 'var(--surface)',
+            borderRadius: 16,
+            border: '1px solid var(--border)',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.07)',
+          }}
           onClick={e => {
             const tag = e.target.tagName.toLowerCase()
             if (!['button', 'a', 'input', 'select', 'textarea'].includes(tag) && !e.target.closest('button, a')) {
@@ -140,95 +153,118 @@ export default function RecipeCard({ recipe, isFav, onToggleFav }) {
         >
           <div className="p-4">
             {/* Header */}
-            <div className="flex items-start justify-between mb-3">
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
               <div>
-                <h3 className="font-head italic" style={{ color: 'var(--gold-light)', fontSize: '1.1rem' }}>
+                <h3 style={{
+                  fontFamily: 'Cormorant Garamond, serif',
+                  fontStyle: 'italic',
+                  fontSize: '1.2rem',
+                  fontWeight: 600,
+                  color: 'var(--gold)',
+                  lineHeight: 1.2,
+                }}>
                   {recipe.name}
                 </h3>
-                <p className="text-xs" style={{ color: 'var(--text-second)' }}>
+                <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 2, fontFamily: 'DM Sans, sans-serif' }}>
                   {recipe.glassware} · {recipe.method} · {recipe.ice}
                 </p>
               </div>
               <button
-                onClick={e => { e.stopPropagation(); setFlipped(false) }}
-                className="text-xs px-2 py-1 rounded-sm flex-shrink-0"
-                style={{ color: 'var(--text-muted)', border: '1px solid var(--border)', background: 'var(--surface-high)' }}
+                onClick={() => setFlipped(false)}
+                style={{
+                  fontSize: '0.72rem', padding: '4px 10px', borderRadius: 8,
+                  color: 'var(--text-muted)', border: '1px solid var(--border)',
+                  background: 'var(--surface-high)', flexShrink: 0, fontFamily: 'DM Sans, sans-serif',
+                  cursor: 'pointer',
+                }}
               >
                 ↩ Flip
               </button>
             </div>
 
+            <div style={{ height: 1, background: 'var(--border)', marginBottom: 12 }} />
+
             {/* Batch dial */}
             {recipe.batchable && (
-              <div className="mb-3">
-                <p className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>Servings</p>
+              <div style={{ marginBottom: 12 }}>
+                <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600 }}>Servings</p>
                 <BatchDial servings={servings} onChange={setServings} />
               </div>
             )}
 
             {/* Ingredients */}
-            <div className="mb-3">
-              <p className="text-xs uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
+            <div style={{ marginBottom: 12 }}>
+              <p style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--text-muted)', fontWeight: 600, marginBottom: 8 }}>
                 Ingredients
               </p>
-              <ul className="space-y-1">
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
                 {batchedIngredients.map((ing, i) => (
-                  <li key={i} className="flex items-baseline gap-2 text-sm">
-                    <span
-                      className="font-semibold tabular-nums flex-shrink-0"
-                      style={{ color: ing.batchable !== false ? 'var(--gold)' : 'var(--text-muted)', minWidth: '3.2rem' }}
-                    >
+                  <li key={i} style={{ display: 'flex', alignItems: 'baseline', gap: 8, fontSize: '0.88rem' }}>
+                    <span style={{
+                      fontWeight: 700,
+                      color: ing.batchable !== false ? 'var(--gold)' : 'var(--text-muted)',
+                      minWidth: '3.2rem',
+                      flexShrink: 0,
+                      fontFamily: 'DM Sans, sans-serif',
+                    }}>
                       {ing.batchable !== false && ing.amount
                         ? (ing.totalMl ? `${ing.totalMl}ml` : `${ing.amount} ${ing.unit}`)
                         : (ing.amount ? `${ing.amount} ${ing.unit}` : ing.unit || '—')}
                     </span>
                     <span style={{ color: 'var(--text-primary)' }}>{ing.name}</span>
                     {servings > 1 && ing.bottles && (
-                      <span className="text-xs ml-auto" style={{ color: 'var(--text-muted)' }}>×{ing.bottles}</span>
+                      <span style={{ fontSize: '0.72rem', marginLeft: 'auto', color: 'var(--text-muted)' }}>×{ing.bottles}</span>
                     )}
                   </li>
                 ))}
               </ul>
             </div>
 
+            <div style={{ height: 1, background: 'var(--border)', marginBottom: 12 }} />
+
             {/* Method */}
-            <div className="mb-3">
-              <p className="text-xs uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
+            <div style={{ marginBottom: 12 }}>
+              <p style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--text-muted)', fontWeight: 600, marginBottom: 8 }}>
                 Method
               </p>
-              <ol className="space-y-1">
+              <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 5 }}>
                 {recipe.instructions.map((step, i) => (
-                  <li key={i} className="flex gap-2 text-xs" style={{ color: 'var(--text-primary)' }}>
-                    <span style={{ color: 'var(--gold)', flexShrink: 0 }}>{i + 1}.</span>
-                    <span>{step}</span>
+                  <li key={i} style={{ display: 'flex', gap: 6, fontSize: '0.82rem' }}>
+                    <span style={{ color: 'var(--gold)', fontWeight: 700, flexShrink: 0 }}>{i + 1}.</span>
+                    <span style={{ color: 'var(--text-second)', lineHeight: 1.5 }}>{step}</span>
                   </li>
                 ))}
               </ol>
             </div>
 
             {/* Garnish */}
-            <div
-              className="flex gap-3 text-xs mb-3 p-2 rounded-sm"
-              style={{ background: 'var(--surface-high)', border: '1px solid var(--border)' }}
-            >
-              <span style={{ color: 'var(--text-muted)' }}>Garnish:</span>
+            <div style={{
+              display: 'flex', gap: 8, fontSize: '0.8rem', marginBottom: 10, padding: '8px 10px',
+              background: 'var(--surface-high)', borderRadius: 8, border: '1px solid var(--border)',
+            }}>
+              <span style={{ color: 'var(--text-muted)', flexShrink: 0, fontWeight: 600 }}>Garnish:</span>
               <span style={{ color: 'var(--text-second)' }}>{recipe.garnish || '—'}</span>
             </div>
 
             {/* Allergens */}
             {recipe.allergens?.length > 0 && (
-              <div className="flex flex-wrap gap-1 mb-3">
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 10 }}>
                 {recipe.allergens.map(a => <AllergenChip key={a} allergen={a} />)}
               </div>
             )}
 
             {/* Story drawer */}
             {recipe.story && (
-              <div className="mb-2">
+              <div style={{ marginBottom: 8 }}>
                 <button
                   onClick={() => setStoryOpen(o => !o)}
-                  className="flex items-center gap-2 text-xs w-full text-left py-1"
-                  style={{ color: 'var(--text-second)' }}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    fontSize: '0.78rem', color: 'var(--text-muted)',
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    padding: '4px 0', fontFamily: 'DM Sans, sans-serif',
+                    width: '100%', textAlign: 'left',
+                  }}
                 >
                   <span>{storyOpen ? '▾' : '▸'}</span>
                   <span>The Story</span>
@@ -239,10 +275,10 @@ export default function RecipeCard({ recipe, isFav, onToggleFav }) {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="overflow-hidden"
+                      transition={{ duration: 0.25 }}
+                      style={{ overflow: 'hidden' }}
                     >
-                      <p className="text-xs mt-1 pb-1" style={{ color: 'var(--text-second)', lineHeight: 1.6 }}>
+                      <p style={{ fontSize: '0.78rem', marginTop: 6, lineHeight: 1.6, color: 'var(--text-second)', fontStyle: 'italic' }}>
                         {recipe.story}
                       </p>
                     </motion.div>
@@ -256,18 +292,21 @@ export default function RecipeCard({ recipe, isFav, onToggleFav }) {
                 href={recipe.diffordsLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-xs mb-2"
-                style={{ color: 'var(--text-muted)' }}
+                style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 8, textDecoration: 'none' }}
                 onClick={e => e.stopPropagation()}
               >
-                Difford's Guide →
+                Difford's Guide ↗
               </a>
             )}
 
             <button
               onClick={() => navigate(`/recipe/${recipe.id}`)}
-              className="mt-2 w-full py-2 text-xs rounded-sm"
-              style={{ background: 'transparent', border: '1px solid var(--border-gold)', color: 'var(--gold)' }}
+              style={{
+                marginTop: 4, width: '100%', padding: '10px 0',
+                fontSize: '0.82rem', borderRadius: 8, cursor: 'pointer',
+                background: 'var(--gold)', color: '#fff',
+                border: 'none', fontWeight: 600, fontFamily: 'DM Sans, sans-serif',
+              }}
             >
               Full Recipe →
             </button>

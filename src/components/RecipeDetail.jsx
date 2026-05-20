@@ -53,12 +53,12 @@ export default function RecipeDetail({ isFav, onToggleFav }) {
         ) : (
           <div
             className="w-full h-full"
-            style={{ background: `linear-gradient(160deg, ${recipe.colour}cc 0%, ${recipe.colour}44 50%, #0a0908 100%)` }}
+            style={{ background: `linear-gradient(160deg, ${recipe.colour}cc 0%, ${recipe.colour}44 50%, #e8f0f0 100%)` }}
           />
         )}
         <div
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(to top, var(--bg) 0%, rgba(10,9,8,0.4) 50%, transparent 100%)' }}
+          style={{ background: 'linear-gradient(to top, var(--bg) 0%, rgba(0,0,0,0.15) 50%, transparent 100%)' }}
         />
         {/* Back button */}
         <button

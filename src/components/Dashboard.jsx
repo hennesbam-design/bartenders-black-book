@@ -121,23 +121,25 @@ export default function Dashboard() {
         transition={{ duration: 0.4 }}
         style={{ background: 'var(--gold)', paddingTop: 44, paddingBottom: 28, paddingLeft: 20, paddingRight: 20 }}
       >
-        <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.68rem', letterSpacing: '0.22em', textTransform: 'uppercase', fontFamily: 'DM Sans, sans-serif', fontWeight: 500, marginBottom: 4 }}>
-          Coppa Club
-        </p>
-        <h1 style={{
-          fontFamily: 'Cormorant Garamond, serif',
-          fontStyle: 'italic',
-          fontSize: 'clamp(2rem, 8vw, 2.8rem)',
-          fontWeight: 300,
-          color: '#ffffff',
-          lineHeight: 1.1,
-          letterSpacing: '0.01em',
-        }}>
-          Bartender's Black Book
-        </h1>
-        <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.72rem', marginTop: 6, fontFamily: 'DM Sans, sans-serif' }}>
-          Spring 2026 Reference Edition
-        </p>
+        <Link to="/" style={{ textDecoration: 'none', display: 'block' }}>
+          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.68rem', letterSpacing: '0.22em', textTransform: 'uppercase', fontFamily: 'DM Sans, sans-serif', fontWeight: 500, marginBottom: 4 }}>
+            Coppa Club
+          </p>
+          <h1 style={{
+            fontFamily: 'Cormorant Garamond, serif',
+            fontStyle: 'italic',
+            fontSize: 'clamp(2rem, 8vw, 2.8rem)',
+            fontWeight: 300,
+            color: '#ffffff',
+            lineHeight: 1.1,
+            letterSpacing: '0.01em',
+          }}>
+            Bartender's Black Book
+          </h1>
+          <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.72rem', marginTop: 6, fontFamily: 'DM Sans, sans-serif' }}>
+            Spring 2026 Reference Edition
+          </p>
+        </Link>
       </motion.header>
 
       {/* Nav grid */}

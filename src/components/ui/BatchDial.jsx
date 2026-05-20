@@ -2,42 +2,32 @@ const PRESETS = [1, 2, 5, 10, 25, 50]
 
 export default function BatchDial({ servings, onChange }) {
   return (
-    <div className="flex items-center gap-2">
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
       <button
         onClick={() => onChange(Math.max(1, servings - 1))}
-        className="w-7 h-7 rounded-sm flex items-center justify-center text-sm transition-colors"
-        style={{ background: 'var(--surface-high)', color: 'var(--gold)', border: '1px solid var(--border)' }}
-      >
-        −
-      </button>
-      <span
-        className="w-10 text-center text-sm font-semibold tabular-nums"
-        style={{ color: 'var(--gold-light)' }}
-      >
+        style={{ width: 32, height: 32, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', cursor: 'pointer', background: 'var(--surface-high)', color: 'var(--gold)', border: '1px solid var(--border)', fontWeight: 600 }}
+      >−</button>
+      <span style={{ width: 40, textAlign: 'center', fontSize: '1rem', fontWeight: 700, color: 'var(--gold)', fontFamily: 'DM Sans, sans-serif' }}>
         {servings}
       </span>
       <button
         onClick={() => onChange(servings + 1)}
-        className="w-7 h-7 rounded-sm flex items-center justify-center text-sm transition-colors"
-        style={{ background: 'var(--surface-high)', color: 'var(--gold)', border: '1px solid var(--border)' }}
-      >
-        +
-      </button>
-      <div className="flex gap-1 ml-2">
+        style={{ width: 32, height: 32, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', cursor: 'pointer', background: 'var(--surface-high)', color: 'var(--gold)', border: '1px solid var(--border)', fontWeight: 600 }}
+      >+</button>
+      <div style={{ display: 'flex', gap: 4, marginLeft: 8 }}>
         {PRESETS.map(p => (
           <button
             key={p}
             onClick={() => onChange(p)}
-            className="px-1.5 py-0.5 rounded-sm text-xs transition-colors"
             style={{
+              padding: '3px 8px', borderRadius: 6, fontSize: '0.72rem', cursor: 'pointer',
               background: servings === p ? 'var(--gold)' : 'var(--surface-high)',
-              color: servings === p ? '#0a0908' : 'var(--text-second)',
+              color: servings === p ? '#fff' : 'var(--text-second)',
               border: '1px solid var(--border)',
-              fontWeight: servings === p ? 600 : 400,
+              fontWeight: servings === p ? 700 : 400,
+              fontFamily: 'DM Sans, sans-serif',
             }}
-          >
-            {p}
-          </button>
+          >{p}</button>
         ))}
       </div>
     </div>

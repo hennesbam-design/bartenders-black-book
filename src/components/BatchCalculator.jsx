@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { coppaRecipes } from '../data/coppaRecipes'
 import BatchDial from './ui/BatchDial'
 import SearchBar from './ui/SearchBar'
-import DiamondDivider from './ui/DiamondDivider'
 
 const calcBatch = (ingredients, servings) =>
   ingredients.map(ing => {
@@ -22,126 +21,92 @@ export default function BatchCalculator() {
   const [servings, setServings] = useState(10)
 
   const batchableRecipes = coppaRecipes.filter(r => r.batchable)
-
   const filtered = useMemo(() => {
     if (!query) return batchableRecipes
     return batchableRecipes.filter(r => r.name.toLowerCase().includes(query.toLowerCase()))
   }, [query])
 
-  const batchedIngredients = useMemo(
-    () => selected ? calcBatch(selected.ingredients, servings) : [],
-    [selected, servings]
-  )
-
-  const totalVolume = batchedIngredients
-    .filter(i => i.batchable && i.totalMl)
-    .reduce((sum, i) => sum + i.totalMl, 0)
+  const batchedIngredients = useMemo(() => selected ? calcBatch(selected.ingredients, servings) : [], [selected, servings])
+  const totalVolume = batchedIngredients.filter(i => i.batchable && i.totalMl).reduce((sum, i) => sum + i.totalMl, 0)
+  const totalBottles = batchedIngredients.filter(i => i.bottles).reduce((sum, i) => sum + i.bottles, 0)
 
   return (
-    <div className="min-h-screen max-w-lg mx-auto px-4 py-6">
-      <Link to="/dashboard" className="text-xs mb-3 block" style={{ color: 'var(--text-muted)' }}>← Dashboard</Link>
-      <h2 className="font-head italic mb-1" style={{ color: 'var(--gold-light)', fontSize: '1.8rem' }}>
-        Batch Calculator
-      </h2>
-      <p className="text-xs mb-5" style={{ color: 'var(--text-muted)' }}>Scale any batchable recipe</p>
+    <div className="page">
+      <Link to="/dashboard" className="back-link">← Dashboard</Link>
+      <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic', fontSize: '2rem', color: 'var(--gold)', marginBottom: 4 }}>Batch Calc</h2>
+      <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: 20 }}>Scale any batchable recipe for events & prep</p>
 
-      {/* Recipe picker */}
-      <div className="mb-4">
+      <div style={{ marginBottom: 12 }}>
         <SearchBar value={query} onChange={setQuery} placeholder="Search batchable recipes…" />
       </div>
 
-      <div className="mb-5 flex flex-wrap gap-2">
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 20 }}>
         {filtered.map(r => (
-          <button
-            key={r.id}
-            onClick={() => setSelected(r)}
-            className="px-3 py-1.5 rounded-sm text-xs transition-colors"
-            style={{
-              background: selected?.id === r.id ? 'var(--gold)' : 'var(--surface)',
-              color: selected?.id === r.id ? '#0a0908' : 'var(--text-second)',
-              border: `1px solid ${selected?.id === r.id ? 'var(--gold)' : 'var(--border)'}`,
-              fontWeight: selected?.id === r.id ? 600 : 400,
-            }}
-          >
+          <button key={r.id} onClick={() => setSelected(r)} style={{
+            padding: '5px 12px', borderRadius: 999, fontSize: '0.78rem', cursor: 'pointer',
+            background: selected?.id === r.id ? 'var(--gold)' : 'var(--surface)',
+            color: selected?.id === r.id ? '#fff' : 'var(--text-second)',
+            border: `1px solid ${selected?.id === r.id ? 'var(--gold)' : 'var(--border)'}`,
+            fontWeight: selected?.id === r.id ? 600 : 400, fontFamily: 'DM Sans, sans-serif',
+          }}>
             {r.name}
           </button>
         ))}
       </div>
 
       {selected && (
-        <div className="rounded-sm overflow-hidden" style={{ border: '1px solid var(--border-gold)' }}>
-          {/* Selected recipe header */}
-          <div className="px-4 pt-4 pb-3" style={{ background: 'var(--surface)' }}>
-            <div className="flex items-start justify-between">
-              <div>
-                <h3 className="font-head italic" style={{ color: 'var(--gold-light)', fontSize: '1.3rem' }}>
-                  {selected.name}
-                </h3>
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                  {selected.glassware} · {selected.method}
-                </p>
-              </div>
-              {!selected.batchable && (
-                <span className="text-xs px-2 py-1 rounded-sm" style={{ background: 'rgba(168,80,80,0.2)', color: '#c88080', border: '1px solid rgba(168,80,80,0.3)' }}>
-                  Not batchable
-                </span>
-              )}
-            </div>
+        <div style={{ borderRadius: 14, overflow: 'hidden', border: '1px solid var(--border)', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+          {/* Header */}
+          <div style={{ background: 'var(--gold)', padding: '16px 18px' }}>
+            <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic', fontSize: '1.5rem', fontWeight: 300, color: '#fff', lineHeight: 1.1, marginBottom: 3 }}>
+              {selected.name}
+            </h3>
+            <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.75)' }}>{selected.glassware} · {selected.method}</p>
           </div>
 
-          <DiamondDivider />
-
-          {/* Servings control */}
-          <div className="px-4 py-3" style={{ background: 'var(--surface)' }}>
-            <p className="text-xs uppercase tracking-widest mb-2" style={{ color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
-              Servings
-            </p>
+          {/* Servings */}
+          <div style={{ background: 'var(--surface)', padding: '14px 18px', borderBottom: '1px solid var(--border)' }}>
+            <p className="label" style={{ marginBottom: 10 }}>Servings</p>
             <BatchDial servings={servings} onChange={setServings} />
           </div>
 
-          <DiamondDivider />
+          {/* Stats strip */}
+          {totalVolume > 0 && (
+            <div style={{ background: 'var(--teal-50)', padding: '10px 18px', borderBottom: '1px solid var(--teal-100)', display: 'flex', gap: 24 }}>
+              <div>
+                <p style={{ fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.14em', color: 'var(--text-muted)', fontWeight: 700, marginBottom: 2 }}>Total Volume</p>
+                <p style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--gold)', fontFamily: 'DM Sans, sans-serif' }}>{(totalVolume / 1000).toFixed(2)}L</p>
+              </div>
+              {totalBottles > 0 && (
+                <div>
+                  <p style={{ fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.14em', color: 'var(--text-muted)', fontWeight: 700, marginBottom: 2 }}>Bottles Needed</p>
+                  <p style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--gold)', fontFamily: 'DM Sans, sans-serif' }}>{totalBottles}</p>
+                </div>
+              )}
+            </div>
+          )}
 
-          {/* Batched ingredients */}
-          <div className="px-4 py-4" style={{ background: 'var(--surface)' }}>
-            <p className="text-xs uppercase tracking-widest mb-3" style={{ color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
-              Quantities for {servings} × serves
-            </p>
-            <div className="space-y-2">
+          {/* Ingredients */}
+          <div style={{ background: 'var(--surface)', padding: '14px 18px' }}>
+            <p className="label" style={{ marginBottom: 12 }}>Quantities for {servings} × serves</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {batchedIngredients.map((ing, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <div className="flex-shrink-0" style={{ minWidth: '5rem' }}>
-                    {ing.batchable ? (
-                      <span className="text-sm font-semibold tabular-nums" style={{ color: 'var(--gold)' }}>
-                        {ing.totalMl ? `${ing.totalMl}ml` : '—'}
-                      </span>
-                    ) : (
-                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>taste</span>
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <span className="text-sm" style={{ color: 'var(--text-primary)' }}>{ing.name}</span>
+                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+                  <span style={{ minWidth: 72, flexShrink: 0, fontWeight: 700, fontSize: '0.95rem', color: ing.batchable ? 'var(--gold)' : 'var(--text-muted)', fontFamily: 'DM Sans, sans-serif' }}>
+                    {ing.batchable ? (ing.totalMl ? `${ing.totalMl}ml` : '—') : 'taste'}
+                  </span>
+                  <div style={{ flex: 1 }}>
+                    <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>{ing.name}</span>
                     {ing.bottles && (
-                      <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                      <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 1 }}>
                         {ing.bottles} × {ing.bottleSize}ml bottle{ing.bottles > 1 ? 's' : ''}
-                        {ing.leftover > 0 && ` (${ing.leftover}ml leftover)`}
-                      </div>
+                        {ing.leftover > 0 ? ` · ${ing.leftover}ml leftover` : ''}
+                      </p>
                     )}
                   </div>
                 </div>
               ))}
             </div>
-
-            {totalVolume > 0 && (
-              <div
-                className="mt-4 pt-3 flex items-center justify-between text-sm"
-                style={{ borderTop: '1px solid var(--border)' }}
-              >
-                <span style={{ color: 'var(--text-muted)' }}>Total volume</span>
-                <span className="font-semibold tabular-nums" style={{ color: 'var(--gold-light)' }}>
-                  {(totalVolume / 1000).toFixed(2)}L
-                </span>
-              </div>
-            )}
           </div>
         </div>
       )}

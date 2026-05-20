@@ -2,9 +2,17 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { coppaRecipes } from '../data/coppaRecipes'
-import DiamondDivider from './ui/DiamondDivider'
 
 const MODES = ['Stories', 'Selling Lines', 'Common Mistakes', 'Talking Points', 'Quick Fire']
+
+const pill = (active) => ({
+  flexShrink: 0, padding: '6px 14px', borderRadius: 999, fontSize: '0.78rem',
+  fontFamily: 'DM Sans, sans-serif', cursor: 'pointer', transition: 'all 0.15s',
+  background: active ? 'var(--gold)' : 'var(--surface)',
+  color: active ? '#fff' : 'var(--text-second)',
+  border: `1px solid ${active ? 'var(--gold)' : 'var(--border)'}`,
+  fontWeight: active ? 600 : 400,
+})
 
 function QuickFire() {
   const quizable = coppaRecipes.filter(r => r.talkingPoint || r.story)
@@ -12,61 +20,58 @@ function QuickFire() {
   const [revealed, setRevealed] = useState(false)
   const recipe = quizable[idx]
 
-  const next = () => {
-    setIdx(Math.floor(Math.random() * quizable.length))
-    setRevealed(false)
-  }
+  const next = () => { setIdx(Math.floor(Math.random() * quizable.length)); setRevealed(false) }
 
   return (
-    <div className="space-y-4">
-      <div
-        className="p-4 rounded-sm min-h-32"
-        style={{ background: 'var(--surface)', border: '1px solid var(--border-gold)' }}
-      >
-        <p className="text-xs uppercase tracking-widest mb-3" style={{ color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
-          What's the story behind this cocktail?
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {/* Question card */}
+      <div style={{ background: 'var(--gold)', borderRadius: 14, padding: '20px', color: '#fff' }}>
+        <p style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.16em', fontWeight: 600, color: 'rgba(255,255,255,0.7)', marginBottom: 8 }}>
+          What's the story behind…
         </p>
-        <h3 className="font-head italic text-2xl mb-1" style={{ color: 'var(--gold-light)' }}>{recipe.name}</h3>
-        <p className="text-xs" style={{ color: 'var(--text-second)' }}>{recipe.category}</p>
+        <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic', fontSize: '1.8rem', fontWeight: 300, color: '#fff', lineHeight: 1.1, marginBottom: 4 }}>
+          {recipe.name}
+        </h3>
+        <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.7)' }}>{recipe.category}</p>
       </div>
 
-      {!revealed ? (
-        <button
-          onClick={() => setRevealed(true)}
-          className="w-full py-3 rounded-sm text-sm"
-          style={{ background: 'var(--gold)', color: '#0a0908', fontWeight: 600 }}
-        >
-          Reveal Answer
-        </button>
-      ) : (
-        <AnimatePresence>
+      <AnimatePresence mode="wait">
+        {!revealed ? (
+          <motion.button
+            key="reveal"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={() => setRevealed(true)}
+            style={{ width: '100%', padding: '14px 0', borderRadius: 10, fontSize: '0.9rem', fontWeight: 600, cursor: 'pointer', background: 'var(--surface)', color: 'var(--gold)', border: '2px solid var(--gold)', fontFamily: 'DM Sans, sans-serif' }}
+          >
+            Reveal Answer
+          </motion.button>
+        ) : (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-3"
+            key="answer"
+            initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+            style={{ display: 'flex', flexDirection: 'column', gap: 10 }}
           >
             {recipe.story && (
-              <div className="p-4 rounded-sm" style={{ background: 'var(--surface-high)', border: '1px solid var(--border)' }}>
-                <p className="text-xs uppercase tracking-widest mb-1" style={{ color: 'var(--text-muted)', letterSpacing: '0.1em' }}>Story</p>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-second)', lineHeight: 1.7 }}>{recipe.story}</p>
+              <div style={{ background: 'var(--surface)', borderRadius: 12, padding: '14px 16px', border: '1px solid var(--border)' }}>
+                <p style={{ fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '0.14em', fontWeight: 700, color: 'var(--text-muted)', marginBottom: 6 }}>Story</p>
+                <p style={{ fontSize: '0.88rem', color: 'var(--text-second)', lineHeight: 1.65 }}>{recipe.story}</p>
               </div>
             )}
             {recipe.talkingPoint && (
-              <div className="p-4 rounded-sm" style={{ background: 'rgba(196,145,61,0.07)', border: '1px solid var(--border-gold)' }}>
-                <p className="text-xs uppercase tracking-widest mb-1" style={{ color: 'var(--text-muted)', letterSpacing: '0.1em' }}>Talking Point</p>
-                <p className="text-sm italic" style={{ color: 'var(--gold-light)' }}>{recipe.talkingPoint}</p>
+              <div style={{ background: 'var(--teal-50)', borderRadius: 12, padding: '14px 16px', borderLeft: '3px solid var(--gold)' }}>
+                <p style={{ fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '0.14em', fontWeight: 700, color: 'var(--text-muted)', marginBottom: 6 }}>Talking Point</p>
+                <p style={{ fontSize: '0.88rem', fontStyle: 'italic', color: 'var(--gold)', lineHeight: 1.6 }}>{recipe.talkingPoint}</p>
               </div>
             )}
             <button
               onClick={next}
-              className="w-full py-3 rounded-sm text-sm"
-              style={{ background: 'var(--surface)', color: 'var(--gold)', border: '1px solid var(--border-gold)' }}
+              style={{ width: '100%', padding: '14px 0', borderRadius: 10, fontSize: '0.9rem', fontWeight: 600, cursor: 'pointer', background: 'var(--gold)', color: '#fff', border: 'none', fontFamily: 'DM Sans, sans-serif' }}
             >
               Next cocktail →
             </button>
           </motion.div>
-        </AnimatePresence>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   )
 }
@@ -86,77 +91,58 @@ export default function TrainingMode() {
     })
 
     return (
-      <div className="space-y-3">
-        {filtered.map(r => (
-          <div
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {filtered.map((r, i) => (
+          <motion.div
             key={r.id}
-            className="p-4 rounded-sm"
-            style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+            initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.03 }}
+            style={{ background: 'var(--surface)', borderRadius: 12, padding: '14px 16px', border: '1px solid var(--border)', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}
           >
-            <h4 className="font-head italic mb-2" style={{ color: 'var(--gold-light)', fontSize: '1rem' }}>
+            <h4 style={{ fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic', fontSize: '1.1rem', color: 'var(--gold)', marginBottom: 8 }}>
               {r.name}
             </h4>
-            <DiamondDivider className="mb-2" />
+            <div style={{ height: 1, background: 'var(--border)', marginBottom: 10 }} />
+
             {mode === 'Stories' && (
-              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-second)', lineHeight: 1.7 }}>{r.story}</p>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-second)', lineHeight: 1.65 }}>{r.story}</p>
             )}
             {mode === 'Selling Lines' && (
-              <p className="text-sm italic" style={{ color: 'var(--text-second)' }}>"{r.sellingLine}"</p>
+              <p style={{ fontSize: '0.88rem', fontStyle: 'italic', color: 'var(--text-second)', lineHeight: 1.6 }}>"{r.sellingLine}"</p>
             )}
             {mode === 'Talking Points' && (
-              <p className="text-sm italic" style={{ color: 'var(--gold)' }}>{r.talkingPoint}</p>
+              <div style={{ background: 'var(--teal-50)', borderRadius: 8, padding: '10px 12px', borderLeft: '3px solid var(--gold)' }}>
+                <p style={{ fontSize: '0.85rem', fontStyle: 'italic', color: 'var(--gold)', lineHeight: 1.6, margin: 0 }}>{r.talkingPoint}</p>
+              </div>
             )}
             {mode === 'Common Mistakes' && (
-              <ul className="space-y-1">
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {r.commonMistakes.map((m, i) => (
-                  <li key={i} className="flex gap-2 text-sm" style={{ color: 'var(--text-second)' }}>
-                    <span style={{ color: '#a85050', flexShrink: 0 }}>✗</span>
+                  <li key={i} style={{ display: 'flex', gap: 8, fontSize: '0.85rem', color: 'var(--text-second)' }}>
+                    <span style={{ color: '#c0392b', flexShrink: 0, fontWeight: 700 }}>✗</span>
                     <span>{m}</span>
                   </li>
                 ))}
               </ul>
             )}
-          </div>
+          </motion.div>
         ))}
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen max-w-lg mx-auto px-4 py-6">
-      <Link to="/dashboard" className="text-xs mb-3 block" style={{ color: 'var(--text-muted)' }}>← Dashboard</Link>
-      <h2 className="font-head italic mb-1" style={{ color: 'var(--gold-light)', fontSize: '1.8rem' }}>
-        Training Mode
-      </h2>
-      <p className="text-xs mb-5" style={{ color: 'var(--text-muted)' }}>Stories, selling lines and quick-fire trivia</p>
+    <div className="page">
+      <Link to="/dashboard" className="back-link">← Dashboard</Link>
+      <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic', fontSize: '2rem', color: 'var(--gold)', marginBottom: 4 }}>Training Mode</h2>
+      <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: 20 }}>Stories, selling lines and quick-fire trivia</p>
 
-      {/* Mode tabs */}
-      <div className="flex gap-2 overflow-x-auto pb-1 mb-5">
-        {MODES.map(m => (
-          <button
-            key={m}
-            onClick={() => setMode(m)}
-            className="flex-shrink-0 px-3 py-1.5 rounded-sm text-xs transition-colors"
-            style={{
-              background: mode === m ? 'var(--gold)' : 'var(--surface)',
-              color: mode === m ? '#0a0908' : 'var(--text-second)',
-              border: `1px solid ${mode === m ? 'var(--gold)' : 'var(--border)'}`,
-              fontWeight: mode === m ? 600 : 400,
-            }}
-          >
-            {m}
-          </button>
-        ))}
+      <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 4, marginBottom: 20, scrollbarWidth: 'none' }}>
+        {MODES.map(m => <button key={m} onClick={() => setMode(m)} style={pill(mode === m)}>{m}</button>)}
       </div>
 
       <AnimatePresence mode="wait">
-        <motion.div
-          key={mode}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.25 }}
-        >
+        <motion.div key={mode} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
           {renderContent()}
         </motion.div>
       </AnimatePresence>

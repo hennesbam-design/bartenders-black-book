@@ -28,10 +28,10 @@ export default function RecipeDetail({ isFav, onToggleFav }) {
   const [tab, setTab] = useState('recipe')
 
   if (!recipe) return (
-    <div className="min-h-screen flex items-center justify-center" style={{ color: 'var(--text-second)' }}>
-      <div className="text-center">
-        <p className="font-head italic text-2xl mb-2" style={{ color: 'var(--gold)' }}>Recipe not found</p>
-        <Link to="/house" style={{ color: 'var(--text-muted)' }}>← Back to House Recipes</Link>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-second)' }}>
+      <div style={{ textAlign: 'center' }}>
+        <p style={{ fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic', fontSize: '1.5rem', color: 'var(--gold)', marginBottom: 8 }}>Recipe not found</p>
+        <Link to="/house" style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>← Back to House Recipes</Link>
       </div>
     </div>
   )
@@ -40,102 +40,108 @@ export default function RecipeDetail({ isFav, onToggleFav }) {
   const variations = recipe.variations?.map(vid => coppaRecipes.find(r => r.id === vid)).filter(Boolean) || []
 
   return (
-    <div className="min-h-screen max-w-lg mx-auto">
+    <div style={{ minHeight: '100vh', maxWidth: 512, margin: '0 auto' }}>
       {/* Hero image */}
-      <div className="relative h-64 md:h-80 overflow-hidden">
+      <div style={{ position: 'relative', height: 260, overflow: 'hidden' }}>
         {recipe.image || recipe.imageUrl ? (
           <img
             src={recipe.image || recipe.imageUrl}
             alt={recipe.name}
-            className="w-full h-full object-cover"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             onError={e => { e.target.style.display = 'none' }}
           />
         ) : (
-          <div
-            className="w-full h-full"
-            style={{ background: `linear-gradient(160deg, ${recipe.colour}cc 0%, ${recipe.colour}44 50%, #e8f0f0 100%)` }}
-          />
+          <div style={{ width: '100%', height: '100%', background: `linear-gradient(160deg, ${recipe.colour}cc 0%, ${recipe.colour}44 50%, var(--bg) 100%)` }} />
         )}
-        <div
-          className="absolute inset-0"
-          style={{ background: 'linear-gradient(to top, var(--bg) 0%, rgba(0,0,0,0.15) 50%, transparent 100%)' }}
-        />
-        {/* Back button */}
+        {/* Gradient fade to page bg */}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, var(--bg) 0%, rgba(0,0,0,0.08) 60%, transparent 100%)' }} />
+
+        {/* Back button — clean white pill */}
         <button
           onClick={() => navigate(-1)}
-          className="absolute top-4 left-4 flex items-center gap-1 text-sm px-3 py-1.5 rounded-sm"
-          style={{ background: 'rgba(10,9,8,0.7)', color: 'var(--text-second)', border: '1px solid var(--border)' }}
+          style={{
+            position: 'absolute', top: 14, left: 14,
+            display: 'flex', alignItems: 'center', gap: 4,
+            padding: '7px 14px', borderRadius: 999,
+            fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer',
+            background: 'rgba(255,255,255,0.92)', color: 'var(--text-second)',
+            border: '1px solid var(--border)', backdropFilter: 'blur(8px)',
+            fontFamily: 'DM Sans, sans-serif',
+          }}
         >
           ← Back
         </button>
+
         {/* Fav button */}
         {onToggleFav && (
           <button
             onClick={() => onToggleFav(recipe.id)}
-            className="absolute top-4 right-4 text-2xl"
-            style={{ color: isFav ? 'var(--gold)' : 'rgba(196,145,61,0.3)' }}
+            style={{
+              position: 'absolute', top: 14, right: 14,
+              fontSize: '1.4rem', lineHeight: 1, cursor: 'pointer',
+              background: 'rgba(255,255,255,0.92)', border: '1px solid var(--border)',
+              borderRadius: 999, width: 38, height: 38,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              backdropFilter: 'blur(8px)',
+              color: isFav ? '#ff6b6b' : 'var(--text-muted)',
+            }}
           >
-            ♦
+            ♥
           </button>
         )}
       </div>
 
-      <div className="px-4 pb-12 -mt-8 relative z-10">
+      <div style={{ padding: '0 16px 48px', marginTop: -32, position: 'relative', zIndex: 10 }}>
         {/* Title block */}
-        <div className="mb-4">
-          <h1
-            className="font-head italic leading-none mb-1"
-            style={{ color: 'var(--gold-light)', fontSize: 'clamp(1.8rem, 6vw, 2.4rem)' }}
-          >
+        <div style={{ marginBottom: 16 }}>
+          <h1 style={{ fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic', fontSize: 'clamp(1.8rem, 6vw, 2.4rem)', color: 'var(--gold)', lineHeight: 1.1, marginBottom: 4 }}>
             {recipe.name}
           </h1>
-          <div className="flex flex-wrap items-center gap-2 mt-1">
-            <span className="text-sm" style={{ color: 'var(--text-second)' }}>{recipe.category}</span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-second)' }}>{recipe.category}</span>
             <span style={{ color: 'var(--text-muted)' }}>·</span>
-            <span className="text-sm" style={{ color: 'var(--gold)' }}>{DIFFICULTY_DOTS[recipe.difficulty]}</span>
-            <span className="text-sm" style={{ color: 'var(--text-muted)' }}>{DIFFICULTY_LABEL[recipe.difficulty]}</span>
+            <span style={{ fontSize: '0.85rem', color: 'var(--gold)', letterSpacing: 2 }}>{DIFFICULTY_DOTS[recipe.difficulty]}</span>
+            <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>{DIFFICULTY_LABEL[recipe.difficulty]}</span>
           </div>
-          <div className="flex flex-wrap gap-1 mt-2">
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 6 }}>
             {recipe.flavour.map(f => <FlavorTag key={f} tag={f} />)}
           </div>
           {recipe.allergens?.length > 0 && (
-            <div className="flex flex-wrap gap-1 mt-2">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 6 }}>
               {recipe.allergens.map(a => <AllergenChip key={a} allergen={a} />)}
             </div>
           )}
         </div>
 
         {/* Glass · Method · Ice strip */}
-        <div
-          className="flex gap-4 text-xs mb-4 p-3 rounded-sm"
-          style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
-        >
+        <div style={{ display: 'flex', gap: 0, marginBottom: 16, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
           {[
             { label: 'Glass', value: recipe.glassware },
             { label: 'Method', value: recipe.method },
             { label: 'Ice', value: recipe.ice },
-          ].map(({ label, value }) => (
-            <div key={label} className="flex-1 text-center">
-              <div style={{ color: 'var(--text-muted)' }}>{label}</div>
-              <div className="mt-0.5 font-medium" style={{ color: 'var(--text-second)' }}>{value}</div>
+          ].map(({ label, value }, i, arr) => (
+            <div key={label} style={{ flex: 1, textAlign: 'center', padding: '10px 8px', borderRight: i < arr.length - 1 ? '1px solid var(--border)' : 'none' }}>
+              <div style={{ fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--text-muted)', fontWeight: 700, marginBottom: 2 }}>{label}</div>
+              <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-second)' }}>{value}</div>
             </div>
           ))}
         </div>
 
         {/* Tabs */}
-        <div
-          className="flex mb-4 rounded-sm overflow-hidden"
-          style={{ border: '1px solid var(--border)' }}
-        >
-          {['recipe', 'training'].map(t => (
+        <div style={{ display: 'flex', marginBottom: 16, borderRadius: 10, overflow: 'hidden', border: '1px solid var(--border)' }}>
+          {['recipe', 'training'].map((t, i) => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className="flex-1 py-2 text-xs font-medium capitalize transition-colors"
               style={{
-                background: tab === t ? 'var(--surface-high)' : 'var(--surface)',
-                color: tab === t ? 'var(--gold)' : 'var(--text-muted)',
-                borderRight: t === 'recipe' ? '1px solid var(--border)' : 'none',
+                flex: 1, padding: '10px 0', fontSize: '0.82rem', fontWeight: 600,
+                cursor: 'pointer', textTransform: 'capitalize',
+                background: tab === t ? 'var(--gold)' : 'var(--surface)',
+                color: tab === t ? '#fff' : 'var(--text-muted)',
+                border: 'none',
+                borderRight: i === 0 ? '1px solid var(--border)' : 'none',
+                fontFamily: 'DM Sans, sans-serif',
+                transition: 'all 0.15s',
               }}
             >
               {t === 'recipe' ? 'Recipe' : 'Training'}
@@ -154,13 +160,11 @@ export default function RecipeDetail({ isFav, onToggleFav }) {
             >
               {/* Batch calculator */}
               {recipe.batchable && (
-                <div className="mb-5 p-3 rounded-sm" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-xs uppercase tracking-widest" style={{ color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
-                      Batch Calculator
-                    </p>
+                <div style={{ marginBottom: 20, padding: 14, borderRadius: 10, background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                    <p className="label">Batch Calculator</p>
                     {servings > 1 && (
-                      <button onClick={() => setServings(1)} className="text-xs" style={{ color: 'var(--text-muted)' }}>Reset</button>
+                      <button onClick={() => setServings(1)} style={{ fontSize: '0.75rem', color: 'var(--text-muted)', cursor: 'pointer', background: 'none', border: 'none' }}>Reset</button>
                     )}
                   </div>
                   <BatchDial servings={servings} onChange={setServings} />
@@ -168,47 +172,37 @@ export default function RecipeDetail({ isFav, onToggleFav }) {
               )}
 
               {/* Ingredients */}
-              <div className="mb-5">
-                <p className="text-xs uppercase tracking-widest mb-2" style={{ color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
-                  Ingredients
-                </p>
-                <ul className="space-y-2">
+              <div style={{ marginBottom: 20 }}>
+                <p className="label" style={{ marginBottom: 10 }}>Ingredients</p>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {batchedIngredients.map((ing, i) => (
-                    <li key={i} className="flex items-baseline gap-3">
-                      <span
-                        className="text-sm font-semibold tabular-nums flex-shrink-0"
-                        style={{ color: ing.batchable !== false ? 'var(--gold)' : 'var(--text-muted)', minWidth: '4rem' }}
-                      >
+                    <li key={i} style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
+                      <span style={{ fontWeight: 700, fontSize: '0.95rem', color: ing.batchable !== false ? 'var(--gold)' : 'var(--text-muted)', minWidth: '4rem', flexShrink: 0, fontFamily: 'DM Sans, sans-serif' }}>
                         {ing.batchable !== false && ing.amount
                           ? (ing.totalMl ? `${ing.totalMl}ml` : `${ing.amount} ${ing.unit}`)
                           : (ing.amount ? `${ing.amount} ${ing.unit}` : ing.unit || '—')}
                       </span>
-                      <span className="flex-1 text-sm" style={{ color: 'var(--text-primary)' }}>{ing.name}</span>
+                      <span style={{ flex: 1, fontSize: '0.9rem', color: 'var(--text-primary)' }}>{ing.name}</span>
                       {servings > 1 && ing.bottles && (
-                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>×{ing.bottles} bottles</span>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>×{ing.bottles} btl</span>
                       )}
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <DiamondDivider className="mb-5" />
+              <DiamondDivider style={{ marginBottom: 20 }} />
 
               {/* Instructions */}
-              <div className="mb-5">
-                <p className="text-xs uppercase tracking-widest mb-2" style={{ color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
-                  Method
-                </p>
-                <ol className="space-y-2">
+              <div style={{ marginBottom: 20 }}>
+                <p className="label" style={{ marginBottom: 10 }}>Method</p>
+                <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {recipe.instructions.map((step, i) => (
-                    <li key={i} className="flex gap-3">
-                      <span
-                        className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-semibold"
-                        style={{ background: 'var(--surface-high)', color: 'var(--gold)', border: '1px solid var(--border)' }}
-                      >
+                    <li key={i} style={{ display: 'flex', gap: 10 }}>
+                      <span style={{ flexShrink: 0, width: 22, height: 22, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.72rem', fontWeight: 700, background: 'var(--teal-50)', color: 'var(--gold)', border: '1px solid var(--teal-100)' }}>
                         {i + 1}
                       </span>
-                      <span className="text-sm leading-relaxed" style={{ color: 'var(--text-primary)' }}>{step}</span>
+                      <span style={{ fontSize: '0.88rem', lineHeight: 1.6, color: 'var(--text-primary)' }}>{step}</span>
                     </li>
                   ))}
                 </ol>
@@ -216,22 +210,17 @@ export default function RecipeDetail({ isFav, onToggleFav }) {
 
               {/* Garnish */}
               {recipe.garnish && (
-                <div
-                  className="flex items-start gap-3 p-3 rounded-sm mb-5"
-                  style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
-                >
-                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Garnish</span>
-                  <span className="text-xs" style={{ color: 'var(--text-second)' }}>{recipe.garnish}</span>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '10px 14px', borderRadius: 8, marginBottom: 16, background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                  <span style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', flexShrink: 0, paddingTop: 1 }}>Garnish</span>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--text-second)' }}>{recipe.garnish}</span>
                 </div>
               )}
 
               {/* Selling line */}
               {recipe.sellingLine && (
-                <div
-                  className="p-3 rounded-sm mb-5"
-                  style={{ background: 'rgba(196,145,61,0.06)', border: '1px solid var(--border-gold)' }}
-                >
-                  <p className="text-xs italic" style={{ color: 'var(--gold-light)', lineHeight: 1.6 }}>
+                <div style={{ padding: '12px 14px', borderRadius: 8, marginBottom: 16, background: 'var(--teal-50)', borderLeft: '3px solid var(--gold)' }}>
+                  <p style={{ fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '0.14em', fontWeight: 700, color: 'var(--text-muted)', marginBottom: 4 }}>Selling Line</p>
+                  <p style={{ fontSize: '0.88rem', fontStyle: 'italic', color: 'var(--gold)', lineHeight: 1.6, margin: 0 }}>
                     "{recipe.sellingLine}"
                   </p>
                 </div>
@@ -239,17 +228,14 @@ export default function RecipeDetail({ isFav, onToggleFav }) {
 
               {/* Variations */}
               {variations.length > 0 && (
-                <div className="mb-5">
-                  <p className="text-xs uppercase tracking-widest mb-2" style={{ color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
-                    Variations
-                  </p>
-                  <div className="flex flex-wrap gap-2">
+                <div style={{ marginBottom: 16 }}>
+                  <p className="label" style={{ marginBottom: 8 }}>Variations</p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                     {variations.map(v => (
                       <Link
                         key={v.id}
                         to={`/recipe/${v.id}`}
-                        className="px-3 py-1.5 rounded-sm text-xs"
-                        style={{ background: 'var(--surface-high)', color: 'var(--text-second)', border: '1px solid var(--border)' }}
+                        style={{ padding: '6px 14px', borderRadius: 999, fontSize: '0.78rem', fontWeight: 500, textDecoration: 'none', background: 'var(--surface-high)', color: 'var(--text-second)', border: '1px solid var(--border)', fontFamily: 'DM Sans, sans-serif' }}
                       >
                         {v.name} →
                       </Link>
@@ -264,10 +250,9 @@ export default function RecipeDetail({ isFav, onToggleFav }) {
                   href={recipe.diffordsLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm"
-                  style={{ color: 'var(--text-muted)' }}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: '0.78rem', color: 'var(--text-muted)', textDecoration: 'none' }}
                 >
-                  <span>View on Difford's Guide →</span>
+                  View on Difford's Guide ↗
                 </a>
               )}
             </motion.div>
@@ -280,47 +265,36 @@ export default function RecipeDetail({ isFav, onToggleFav }) {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
               transition={{ duration: 0.25 }}
-              className="space-y-4"
+              style={{ display: 'flex', flexDirection: 'column', gap: 12 }}
             >
               {recipe.story && (
-                <div className="p-4 rounded-sm" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
-                  <p className="text-xs uppercase tracking-widest mb-2" style={{ color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
-                    The Story
-                  </p>
-                  <p className="text-sm leading-relaxed" style={{ color: 'var(--text-second)', lineHeight: 1.7 }}>{recipe.story}</p>
+                <div style={{ padding: '14px 16px', borderRadius: 10, background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                  <p className="label" style={{ marginBottom: 6 }}>The Story</p>
+                  <p style={{ fontSize: '0.88rem', color: 'var(--text-second)', lineHeight: 1.7 }}>{recipe.story}</p>
                 </div>
               )}
 
               {recipe.talkingPoint && (
-                <div
-                  className="p-4 rounded-sm"
-                  style={{ background: 'rgba(196,145,61,0.06)', border: '1px solid var(--border-gold)' }}
-                >
-                  <p className="text-xs uppercase tracking-widest mb-2" style={{ color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
-                    Talking Point
-                  </p>
-                  <p className="text-sm italic" style={{ color: 'var(--gold-light)', lineHeight: 1.6 }}>{recipe.talkingPoint}</p>
+                <div style={{ padding: '14px 16px', borderRadius: 10, background: 'var(--teal-50)', borderLeft: '3px solid var(--gold)' }}>
+                  <p className="label" style={{ marginBottom: 6 }}>Talking Point</p>
+                  <p style={{ fontSize: '0.88rem', fontStyle: 'italic', color: 'var(--gold)', lineHeight: 1.6 }}>{recipe.talkingPoint}</p>
                 </div>
               )}
 
               {recipe.sellingLine && (
-                <div className="p-4 rounded-sm" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
-                  <p className="text-xs uppercase tracking-widest mb-2" style={{ color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
-                    Selling Line
-                  </p>
-                  <p className="text-sm italic" style={{ color: 'var(--text-second)', lineHeight: 1.6 }}>"{recipe.sellingLine}"</p>
+                <div style={{ padding: '14px 16px', borderRadius: 10, background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                  <p className="label" style={{ marginBottom: 6 }}>Selling Line</p>
+                  <p style={{ fontSize: '0.88rem', fontStyle: 'italic', color: 'var(--text-second)', lineHeight: 1.6 }}>"{recipe.sellingLine}"</p>
                 </div>
               )}
 
               {recipe.commonMistakes?.length > 0 && (
-                <div className="p-4 rounded-sm" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
-                  <p className="text-xs uppercase tracking-widest mb-2" style={{ color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
-                    Common Mistakes
-                  </p>
-                  <ul className="space-y-1.5">
+                <div style={{ padding: '14px 16px', borderRadius: 10, background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                  <p className="label" style={{ marginBottom: 8 }}>Common Mistakes</p>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
                     {recipe.commonMistakes.map((m, i) => (
-                      <li key={i} className="flex gap-2 text-sm" style={{ color: 'var(--text-second)' }}>
-                        <span style={{ color: '#a85050', flexShrink: 0 }}>✗</span>
+                      <li key={i} style={{ display: 'flex', gap: 8, fontSize: '0.85rem', color: 'var(--text-second)' }}>
+                        <span style={{ color: '#c0392b', flexShrink: 0, fontWeight: 700 }}>✗</span>
                         <span>{m}</span>
                       </li>
                     ))}
@@ -329,11 +303,9 @@ export default function RecipeDetail({ isFav, onToggleFav }) {
               )}
 
               {recipe.upsell && (
-                <div className="p-4 rounded-sm" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
-                  <p className="text-xs uppercase tracking-widest mb-2" style={{ color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
-                    Upsell
-                  </p>
-                  <p className="text-sm" style={{ color: 'var(--text-second)' }}>{recipe.upsell}</p>
+                <div style={{ padding: '14px 16px', borderRadius: 10, background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                  <p className="label" style={{ marginBottom: 6 }}>Upsell</p>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--text-second)' }}>{recipe.upsell}</p>
                 </div>
               )}
             </motion.div>

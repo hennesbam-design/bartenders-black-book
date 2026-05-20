@@ -3,150 +3,113 @@ import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { shotsRecipes } from '../data/shotsRecipes'
 import AllergenChip from './ui/AllergenChip'
-import DiamondDivider from './ui/DiamondDivider'
 
 const CATEGORIES = ['All', ...new Set(shotsRecipes.map(s => s.category))]
 const DIFFICULTY = ['', '●○○', '●●○', '●●●']
+
+const pill = (active) => ({
+  flexShrink: 0, padding: '5px 14px', borderRadius: 999, fontSize: '0.75rem',
+  fontFamily: 'DM Sans, sans-serif', cursor: 'pointer', transition: 'all 0.15s',
+  background: active ? 'var(--gold)' : 'var(--surface)',
+  color: active ? '#fff' : 'var(--text-second)',
+  border: `1px solid ${active ? 'var(--gold)' : 'var(--border)'}`,
+  fontWeight: active ? 600 : 400,
+})
 
 function ShotCard({ shot }) {
   const [open, setOpen] = useState(false)
 
   return (
-    <motion.div
-      layout
-      className="rounded-sm overflow-hidden"
-      style={{ border: '1px solid var(--border)', background: 'var(--surface)' }}
-    >
-      {/* Header row */}
+    <motion.div layout style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border)', background: 'var(--surface)', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
       <button
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center gap-3 p-4 text-left"
+        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer' }}
       >
-        {/* Colour dot */}
-        <div
-          className="w-8 h-8 rounded-sm flex-shrink-0"
-          style={{ background: shot.colour, border: '1px solid var(--border)' }}
-        />
-        <div className="flex-1 min-w-0">
-          <div className="flex items-baseline gap-2">
-            <h4
-              className="font-head italic"
-              style={{ color: 'var(--text-primary)', fontSize: '1.05rem' }}
-            >
+        {/* Colour swatch */}
+        <div style={{ width: 36, height: 36, borderRadius: 8, background: shot.colour, flexShrink: 0, border: '1px solid rgba(0,0,0,0.06)' }} />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+            <h4 style={{ fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic', fontSize: '1.1rem', color: 'var(--text-primary)', margin: 0 }}>
               {shot.name}
             </h4>
-            <span className="text-xs" style={{ color: 'var(--gold)' }}>
-              {DIFFICULTY[shot.difficulty]}
-            </span>
+            <span style={{ fontSize: '0.65rem', color: 'var(--gold)', letterSpacing: 1 }}>{DIFFICULTY[shot.difficulty]}</span>
           </div>
-          <div className="flex items-center gap-2 flex-wrap mt-0.5">
-            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{shot.category}</span>
-            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>·</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2, flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{shot.category}</span>
             {shot.flavour.slice(0, 2).map(f => (
-              <span key={f} className="text-xs" style={{ color: 'var(--text-second)' }}>{f}</span>
+              <span key={f} style={{ fontSize: '0.68rem', color: 'var(--text-muted)', background: 'var(--teal-50)', padding: '1px 7px', borderRadius: 999, border: '1px solid var(--teal-100)' }}>{f}</span>
             ))}
           </div>
         </div>
-        <span
-          className="text-lg flex-shrink-0 transition-transform duration-200"
-          style={{
-            color: 'var(--text-muted)',
-            transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
-          }}
-        >
-          ▾
-        </span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+          style={{ color: 'var(--text-muted)', flexShrink: 0, transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
       </button>
 
-      {/* Expanded content */}
       <AnimatePresence>
         {open && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="overflow-hidden"
+            transition={{ duration: 0.25 }}
+            style={{ overflow: 'hidden' }}
           >
-            <div className="px-4 pb-4" style={{ borderTop: '1px solid var(--border)' }}>
-              <div className="pt-3 space-y-4">
-                {/* Ingredients */}
-                <div>
-                  <p className="text-xs uppercase tracking-widest mb-2" style={{ color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
-                    Ingredients
-                  </p>
-                  <ul className="space-y-1">
-                    {shot.ingredients.map((ing, i) => (
-                      <li key={i} className="flex gap-3 text-sm">
-                        <span
-                          className="flex-shrink-0 font-semibold tabular-nums"
-                          style={{ color: 'var(--gold)', minWidth: '3.5rem' }}
-                        >
-                          {ing.amount ? `${ing.amount}${ing.unit === 'ml' ? 'ml' : ` ${ing.unit}`}` : ing.unit || '—'}
-                        </span>
-                        <span style={{ color: 'var(--text-primary)' }}>{ing.name}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <DiamondDivider />
-
-                {/* Method */}
-                <div>
-                  <p className="text-xs uppercase tracking-widest mb-2" style={{ color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
-                    Method
-                  </p>
-                  <ol className="space-y-1.5">
-                    {shot.instructions.map((step, i) => (
-                      <li key={i} className="flex gap-2 text-xs" style={{ color: 'var(--text-primary)' }}>
-                        <span style={{ color: 'var(--gold)', flexShrink: 0 }}>{i + 1}.</span>
-                        <span style={{ lineHeight: 1.6 }}>{step}</span>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-
-                {/* Serving note */}
-                {shot.servingNote && (
-                  <div
-                    className="flex gap-2 p-2.5 rounded-sm text-xs"
-                    style={{ background: 'var(--surface-high)', border: '1px solid var(--border)' }}
-                  >
-                    <span style={{ color: 'var(--text-muted)' }}>Note:</span>
-                    <span style={{ color: 'var(--text-second)' }}>{shot.servingNote}</span>
-                  </div>
-                )}
-
-                {/* Fun fact */}
-                {shot.talkingPoint && (
-                  <div
-                    className="p-3 rounded-sm"
-                    style={{ background: 'rgba(196,145,61,0.07)', border: '1px solid var(--border-gold)' }}
-                  >
-                    <p className="text-xs uppercase tracking-widest mb-1" style={{ color: 'var(--text-muted)', letterSpacing: '0.1em' }}>
-                      Fun Fact
-                    </p>
-                    <p className="text-xs italic" style={{ color: 'var(--gold-light)', lineHeight: 1.6 }}>
-                      {shot.talkingPoint}
-                    </p>
-                  </div>
-                )}
-
-                {/* Story */}
-                {shot.story && (
-                  <p className="text-xs leading-relaxed" style={{ color: 'var(--text-second)', lineHeight: 1.7 }}>
-                    {shot.story}
-                  </p>
-                )}
-
-                {/* Allergens */}
-                {shot.allergens?.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    {shot.allergens.map(a => <AllergenChip key={a} allergen={a} />)}
-                  </div>
-                )}
+            <div style={{ borderTop: '1px solid var(--border)', padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+              {/* Ingredients */}
+              <div>
+                <p style={{ fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '0.14em', fontWeight: 700, color: 'var(--text-muted)', marginBottom: 8 }}>Ingredients</p>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 5 }}>
+                  {shot.ingredients.map((ing, i) => (
+                    <li key={i} style={{ display: 'flex', gap: 10, fontSize: '0.88rem' }}>
+                      <span style={{ fontWeight: 700, color: 'var(--gold)', minWidth: 52, flexShrink: 0 }}>
+                        {ing.amount ? `${ing.amount}${ing.unit === 'ml' ? 'ml' : ` ${ing.unit}`}` : ing.unit || '—'}
+                      </span>
+                      <span style={{ color: 'var(--text-primary)' }}>{ing.name}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
+
+              <div style={{ height: 1, background: 'var(--border)' }} />
+
+              {/* Method */}
+              <div>
+                <p style={{ fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '0.14em', fontWeight: 700, color: 'var(--text-muted)', marginBottom: 8 }}>Method</p>
+                <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {shot.instructions.map((step, i) => (
+                    <li key={i} style={{ display: 'flex', gap: 8, fontSize: '0.82rem' }}>
+                      <span style={{ fontWeight: 700, color: 'var(--gold)', flexShrink: 0 }}>{i + 1}.</span>
+                      <span style={{ color: 'var(--text-second)', lineHeight: 1.5 }}>{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+
+              {shot.servingNote && (
+                <div style={{ background: 'var(--surface-high)', borderRadius: 8, padding: '8px 12px', fontSize: '0.8rem', color: 'var(--text-second)', display: 'flex', gap: 8 }}>
+                  <span style={{ color: 'var(--text-muted)', fontWeight: 600, flexShrink: 0 }}>Note:</span>
+                  <span>{shot.servingNote}</span>
+                </div>
+              )}
+
+              {shot.talkingPoint && (
+                <div style={{ background: 'var(--teal-50)', borderRadius: 8, padding: '10px 12px', borderLeft: '3px solid var(--gold)' }}>
+                  <p style={{ fontSize: '0.62rem', textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 700, color: 'var(--text-muted)', marginBottom: 4 }}>Fun Fact</p>
+                  <p style={{ fontSize: '0.82rem', fontStyle: 'italic', color: 'var(--gold)', lineHeight: 1.5, margin: 0 }}>{shot.talkingPoint}</p>
+                </div>
+              )}
+
+              {shot.story && (
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-second)', lineHeight: 1.65, margin: 0 }}>{shot.story}</p>
+              )}
+
+              {shot.allergens?.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                  {shot.allergens.map(a => <AllergenChip key={a} allergen={a} />)}
+                </div>
+              )}
             </div>
           </motion.div>
         )}
@@ -157,52 +120,23 @@ function ShotCard({ shot }) {
 
 export default function ShotsSection() {
   const [category, setCategory] = useState('All')
-
-  const filtered = category === 'All'
-    ? shotsRecipes
-    : shotsRecipes.filter(s => s.category === category)
+  const filtered = category === 'All' ? shotsRecipes : shotsRecipes.filter(s => s.category === category)
 
   return (
-    <div className="min-h-screen max-w-lg mx-auto px-4 py-6">
-      <Link to="/dashboard" className="text-xs mb-3 block" style={{ color: 'var(--text-muted)' }}>
-        ← Dashboard
-      </Link>
+    <div className="page">
+      <Link to="/dashboard" className="back-link">← Dashboard</Link>
+      <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic', fontSize: '2rem', color: 'var(--gold)', marginBottom: 4 }}>Shots</h2>
+      <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: 20 }}>{shotsRecipes.length} shots · tap any to expand</p>
 
-      <h2
-        className="font-head italic mb-1"
-        style={{ color: 'var(--gold-light)', fontSize: '1.8rem' }}
-      >
-        Shots
-      </h2>
-      <p className="text-xs mb-5" style={{ color: 'var(--text-muted)' }}>
-        {shotsRecipes.length} shots · tap any to expand
-      </p>
-
-      {/* Category filter */}
-      <div className="flex gap-2 mb-5 overflow-x-auto pb-1">
-        {CATEGORIES.map(c => (
-          <button
-            key={c}
-            onClick={() => setCategory(c)}
-            className="flex-shrink-0 px-3 py-1.5 rounded-sm text-xs transition-colors"
-            style={{
-              background: category === c ? 'var(--gold)' : 'var(--surface)',
-              color: category === c ? '#0a0908' : 'var(--text-second)',
-              border: `1px solid ${category === c ? 'var(--gold)' : 'var(--border)'}`,
-              fontWeight: category === c ? 600 : 400,
-            }}
-          >
-            {c}
-          </button>
-        ))}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 20, overflowX: 'auto', paddingBottom: 4, scrollbarWidth: 'none' }}>
+        {CATEGORIES.map(c => <button key={c} onClick={() => setCategory(c)} style={pill(category === c)}>{c}</button>)}
       </div>
 
-      <motion.div
-        layout
-        className="space-y-2"
-      >
-        {filtered.map(shot => (
-          <ShotCard key={shot.id} shot={shot} />
+      <motion.div layout style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {filtered.map((shot, i) => (
+          <motion.div key={shot.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
+            <ShotCard shot={shot} />
+          </motion.div>
         ))}
       </motion.div>
     </div>

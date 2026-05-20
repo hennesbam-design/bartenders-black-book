@@ -1,19 +1,21 @@
-const ALLERGEN_COLOURS = {
-  'Sulphites': '#7a5200',
-  'Egg': '#5a4a00',
-  'Nuts': '#6a2a00',
-  'Dairy': '#003a5a',
-  'Gluten': '#3a2a00',
-  default: '#2e2720',
+const STYLES = {
+  Sulphites: { bg: '#fef9e7', color: '#7a5800', border: '#f0d060' },
+  Egg:       { bg: '#fff8f0', color: '#7a4400', border: '#f0b870' },
+  Nuts:      { bg: '#fff3ef', color: '#7a2800', border: '#f09878' },
+  Dairy:     { bg: '#eff8ff', color: '#1a5080', border: '#90c8f0' },
+  Gluten:    { bg: '#f8f5ef', color: '#5a4000', border: '#d0b870' },
+  default:   { bg: '#fef9e7', color: '#7a5800', border: '#f0d060' },
 }
 
 export default function AllergenChip({ allergen }) {
-  const bg = ALLERGEN_COLOURS[allergen] || ALLERGEN_COLOURS.default
+  const s = STYLES[allergen] || STYLES.default
   return (
-    <span
-      className="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium tracking-wide"
-      style={{ background: bg, color: 'var(--gold-light)', border: '1px solid var(--border-gold)' }}
-    >
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: 4,
+      padding: '3px 9px', borderRadius: 999,
+      fontSize: '0.7rem', fontWeight: 600, fontFamily: 'DM Sans, sans-serif',
+      background: s.bg, color: s.color, border: `1px solid ${s.border}`,
+    }}>
       ⚠ {allergen}
     </span>
   )

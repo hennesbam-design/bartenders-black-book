@@ -17,7 +17,7 @@ const COLOURS = [
 ]
 
 const TYPESCALE = [
-  { name: 'Display',      tag: 'h1', style: { fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic', fontSize: '3rem',  fontWeight: 300, color: 'var(--text-primary)' }, sample: 'Bartender's Black Book' },
+  { name: 'Display',      tag: 'h1', style: { fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic', fontSize: '3rem',  fontWeight: 300, color: 'var(--text-primary)' }, sample: "Bartender's Black Book" },
   { name: 'Heading 1',    tag: 'h2', style: { fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic', fontSize: '2rem',  fontWeight: 400, color: 'var(--gold)' },         sample: 'House Recipes' },
   { name: 'Heading 2',    tag: 'h3', style: { fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic', fontSize: '1.4rem',fontWeight: 600, color: 'var(--text-primary)' }, sample: 'Espresso Martini' },
   { name: 'Body Large',   tag: 'p',  style: { fontFamily: 'DM Sans, sans-serif', fontSize: '1rem',  fontWeight: 400, color: 'var(--text-primary)' }, sample: 'Double strain into chilled coupe glass.' },

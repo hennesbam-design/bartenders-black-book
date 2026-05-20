@@ -1,9 +1,19 @@
 import { useState, useEffect, useCallback } from 'react'
 
 const cache = {}
+const BASE = import.meta.env.BASE_URL  // '/bartenders-black-book/' on GitHub Pages, '/' locally
+
+/** Prepend the Vite base to any local absolute path like /images/coppa/xxx.jpg */
+const toAbsolute = (path) => {
+  if (!path) return null
+  if (path.startsWith('http')) return path           // already an external URL
+  if (path.startsWith('/')) return BASE + path.slice(1) // e.g. /images/... → base + images/...
+  return path
+}
 
 export function useRecipeImage(recipe) {
-  const [src, setSrc] = useState(recipe.image || recipe.imageUrl || null)
+  const localSrc = toAbsolute(recipe.image || recipe.imageUrl || null)
+  const [src, setSrc] = useState(localSrc)
   const [errored, setErrored] = useState(false)
 
   const searchName = recipe.cdbSearchName || recipe.name
@@ -18,10 +28,7 @@ export function useRecipeImage(recipe) {
       .then(data => {
         if (cancelled) return
         const img = data?.drinks?.[0]?.strDrinkThumb
-        if (img) {
-          cache[searchName] = img
-          setSrc(img)
-        }
+        if (img) { cache[searchName] = img; setSrc(img) }
       })
       .catch(() => {})
 
